@@ -36,6 +36,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="@drawable/divider"
-        android:dividerHeight="1dp"/>
+        android:dividerHeight="30dp"
+        android:padding="10dp"/>
 </LinearLayout>
 

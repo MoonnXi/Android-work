@@ -46,10 +46,11 @@
         android:id="@+id/followedActivitiesListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"
         android:layout_marginTop="5dp"
-        android:layout_below="@id/ll_space"/>
+        android:layout_below="@id/ll_space"
+        android:divider="@drawable/divider"
+        android:dividerHeight="30dp"
+        android:padding="10dp"/>
 
     <TextView
         android:id="@+id/tv_info"
