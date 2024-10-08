@@ -155,7 +155,7 @@ public class HomeFragment extends Fragment {
         }).start();
     }
 
-    // 初始化首页列表回调
+    // 初始化首页
     private Callback callback = new Callback() {
 
         @Override
