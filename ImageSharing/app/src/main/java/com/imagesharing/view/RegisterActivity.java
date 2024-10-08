@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -20,12 +21,23 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
 import com.imagesharing.R;
+import com.imagesharing.util.HeadersUtil;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -86,57 +98,81 @@ public class RegisterActivity extends AppCompatActivity {
      * @param username 用户名
      */
     private void Register(String password, String username) {
-        runOnUiThread(() -> {
-            RequestQueue queue = Volley.newRequestQueue(this);
+        new Thread(() -> {
+            String url = "https://api-store.openguet.cn/api/member/photo/user/register";
 
-            String URL = "http://10.70.142.223:8080/user/register"; // ip换成自己的电脑ip，端口默认8080
+            OkHttpClient client = new OkHttpClient();
 
-            StringRequest request = new StringRequest(Request.Method.POST, URL, response -> {
-                parseJsonResponse(response);
-            }, error -> {
-                Log.d("LoginActivity", error.toString());
-            }){
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> map = new HashMap<>();
-                    map.put("password", password);
-                    map.put("username", username);
-                    return map;
-                }
-            };
-            queue.add(request);
-        });
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Content-Type", "application/json")
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
+
+            // 构建请求参数
+            JSONObject params = new JSONObject();
+            try {
+                params.put("password", password);
+                params.put("username", username);
+
+            } catch (Exception e) {
+                Log.e("ShareActivity", Objects.requireNonNull(e.getMessage()));
+            }
+
+            String json = params.toString();
+            RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(callbackRegister);
+
+        }).start();
     }
 
-    /**
-     * 解析JSON响应
-     * @param response JSON响应
-     */
-    private void parseJsonResponse(String response) {
-        try {
-            JSONObject jsonResponse = new JSONObject(response);
-            String msg = jsonResponse.getString("msg");
-            int code = jsonResponse.getInt("code");
-            // 另起一个线程在界面显示信息
-            runOnUiThread(() -> {
-                if (code == 200) {
-                    Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
-                    Log.d("LoginActivity", response);
-                    // 清除记住密码
-                    clearRemember();
-                    // 注册成功,返回登录界面
-                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                    Log.d("LoginActivity", response);
-                }
-            });
-        } catch (Exception e) {
-            Log.e("LoginActivity", "Error parsing JSON response: " + e.getMessage());
+    private final Callback callbackRegister = new Callback() {
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
+
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                String msg = jsonResponse.getString("msg");
+                int code = jsonResponse.getInt("code");
+
+                // 另起一个线程在界面显示信息
+                runOnUiThread(() -> {
+                    if (code == 200) {
+                        Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
+                        Log.d("LoginActivity", responseBody);
+                        // 清除记住密码
+                        clearRemember();
+                        // 注册成功,返回登录界面
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                        Log.d("LoginActivity", responseBody);
+                    }
+                });
+
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
         }
-    }
+
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.e("LoginActivity", "callbackRegister: " + e.getMessage());
+        }
+    };
 
     private void clearRemember() { // 清除记住密码
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
