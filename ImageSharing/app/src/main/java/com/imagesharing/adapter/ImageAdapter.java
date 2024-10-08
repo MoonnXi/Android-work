@@ -46,8 +46,8 @@ public class ImageAdapter extends BaseAdapter {
             imageView = new ImageView(context);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    250, // 宽度为 100dp
-                    250  // 高度为 100dp
+                    300,
+                    300
             );
             imageView.setLayoutParams(params);
         } else {

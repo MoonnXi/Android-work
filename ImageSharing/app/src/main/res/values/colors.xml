@@ -8,6 +8,7 @@
     <color name="dark_grey25">#BEBEBE</color>
     <color name="blue">#31ACD6</color>
     <color name="light_blue">#89CFF0</color>
+    <color name="deep_blue">#41ABFF</color>
     <color name="listBackGround">#EDEDED</color>
     <color name="imageCardBack">#E3E3E3</color>
 </resources>

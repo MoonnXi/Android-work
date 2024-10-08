@@ -9,10 +9,10 @@
     <RelativeLayout
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/white">
+        android:layout_height="65dp"
+        android:background="@color/deep_blue">
 
-        <SearchView
+        <androidx.appcompat.widget.SearchView
             android:id="@+id/search_view"
             android:layout_width="370dp"
             android:layout_height="30dp"

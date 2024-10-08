@@ -1,7 +1,6 @@
 package com.imagesharing.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,27 +8,36 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.imagesharing.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.List;
 
-public class NewImageAdapter extends BaseAdapter {
+public class DetailImageAdapter extends BaseAdapter {
 
     private Context context;
-    private List<String> imageUrlList;
+    private JSONArray imageUrlList;
 
-    public NewImageAdapter(Context context, List<String> imageUrlList) {
+    public DetailImageAdapter(Context context, JSONArray imageUrlList) {
         this.context = context;
         this.imageUrlList = imageUrlList;
     }
 
     @Override
     public int getCount() {
-        return imageUrlList.size();
+        return imageUrlList.length();
     }
 
     @Override
     public Object getItem(int i) {
-        return imageUrlList.get(i);
+        try {
+            return imageUrlList.getString(i);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -49,9 +57,13 @@ public class NewImageAdapter extends BaseAdapter {
         }
 
         // 使用 Glide 加载图片
-        Glide.with(context)
-                .load(imageUrlList.get(i))
-                .into(imageView);
+        try {
+            Glide.with(context)
+                    .load(imageUrlList.get(i))
+                    .into(imageView);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
         return imageView;
     }

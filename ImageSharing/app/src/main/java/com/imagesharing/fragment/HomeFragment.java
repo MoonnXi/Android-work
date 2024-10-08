@@ -117,7 +117,7 @@ public class HomeFragment extends Fragment {
     }
 
     // 初始化首页列表回调
-    private Callback callback = new Callback() {
+    private final Callback callback = new Callback() {
 
         @Override
         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
