@@ -89,7 +89,7 @@ public class RegisterActivity extends AppCompatActivity {
         runOnUiThread(() -> {
             RequestQueue queue = Volley.newRequestQueue(this);
 
-            String URL = "http://10.34.17.152:8080/user/register"; // ip换成自己的电脑ip，端口默认8080
+            String URL = "http://10.70.142.223:8080/user/register"; // ip换成自己的电脑ip，端口默认8080
 
             StringRequest request = new StringRequest(Request.Method.POST, URL, response -> {
                 parseJsonResponse(response);

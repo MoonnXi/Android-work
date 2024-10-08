@@ -3,14 +3,16 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@drawable/rounded_rectangle"
-    android:padding="5dp">
+    android:padding="16dp">
 
+    <!-- ImageView -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/default_image2"/>
+        android:src="@drawable/ic_loading"/>
 
+    <!-- Inner LinearLayout -->
     <LinearLayout
         android:id="@+id/contentLinearLayout"
         android:layout_width="267dp"

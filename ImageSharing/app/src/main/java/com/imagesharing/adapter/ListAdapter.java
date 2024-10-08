@@ -60,7 +60,7 @@ public class ListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        holder.bind(records, i, userId, context);
+        holder.bind(records, i);
 
         return view;
     }
@@ -88,7 +88,7 @@ public class ListAdapter extends BaseAdapter {
             this.context = context;
         }
 
-        void bind(List<JSONObject> records, int position, Long userId, Context context) {
+        void bind(List<JSONObject> records, int position) {
             JSONObject record = records.get(position);
             try {
                 tvTitle.setText(record.getString("title"));
@@ -99,11 +99,8 @@ public class ListAdapter extends BaseAdapter {
                     JSONArray imageUrlList = record.getJSONArray("imageUrlList");
                     loadImages(imageUrlList);
                 } else {
-                    ivImage.setImageResource(R.drawable.ic_jzz);
+                    ivImage.setImageResource(R.drawable.default_image2);
                 }
-
-                like(ivLike, record.getLong("id"), userId, context);
-                collect(ivCollect, record.getLong("id"), userId, context);
 
             } catch (JSONException e) {
                 Log.e("ListAdapter", Objects.requireNonNull(e.getMessage()));
@@ -116,24 +113,11 @@ public class ListAdapter extends BaseAdapter {
                 String imageUrl = imageUrlList.getString(i);
                 Glide.with(context)
                         .load(imageUrl)
-                        .apply(new RequestOptions().placeholder(R.drawable.ic_miss))
+                        .apply(new RequestOptions().placeholder(R.drawable.ic_loading))
                         .into(ivImage);
             }
         }
 
-    }
-
-    public static void like(ImageView ivLike, Long shareId, Long userId, Context context) {
-        Drawable currentDrawable = ivLike.getDrawable();
-        Drawable targetDrawable = ContextCompat.getDrawable(context, R.drawable.ic_like);
-        ivLike.setOnClickListener(v -> Log.d("ListAdapter", "click"));
-
-    }
-
-    public static void collect(ImageView ivCollect, Long shareId, Long userId, Context context) {
-        Drawable currentDrawable = ivCollect.getDrawable();
-        Drawable targetDrawable = ContextCompat.getDrawable(context, R.drawable.ic_collect);
-        ivCollect.setOnClickListener(v -> Log.d("ListAdapter", "click"));
     }
 
 }

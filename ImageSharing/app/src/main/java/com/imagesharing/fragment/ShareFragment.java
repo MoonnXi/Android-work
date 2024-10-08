@@ -26,6 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.imagesharing.R;
 import com.imagesharing.adapter.ImageAdapter;
+import com.imagesharing.util.HeadersUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,12 +96,32 @@ public class ShareFragment extends Fragment {
         adapter = new ImageAdapter(view.getContext(), imageUris);
         glImages.setAdapter(adapter);
 
-        // 保存按钮点击事件
         Button btnSave = view.findViewById(R.id.btn_save);
-        btnSave.setOnClickListener(v -> saveShare());
+        btnSaveClick(btnSave);
 
-        // 发布按钮点击事件
         Button btnSend = view.findViewById(R.id.btn_send);
+        btnSendClick(btnSend);
+
+        return view;
+    }
+
+    // 保存按钮点击事件
+    private void btnSaveClick(Button btnSave) {
+        btnSave.setOnClickListener(v -> {
+            if (shareListCode == 200) {
+                saveShare();
+            } else if (imageCode == null) {
+                Toast.makeText(getContext(), "请至少选择一张图片", Toast.LENGTH_SHORT).show();
+            } else if (etTitle.getText().toString().isEmpty()) {
+                Toast.makeText(getContext(), "请输入标题", Toast.LENGTH_SHORT).show();
+            } else if (etContent.getText().toString().isEmpty()) {
+                Toast.makeText(getContext(), "请输入内容", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // 发布按钮点击事件
+    private void btnSendClick(Button btnSend) {
         btnSend.setOnClickListener(v -> {
             if (shareListCode == 200) {
                 getMyShareList();
@@ -108,8 +129,6 @@ public class ShareFragment extends Fragment {
                 Toast.makeText(getContext(), "请先保存分享内容", Toast.LENGTH_SHORT).show();
             }
         });
-
-        return view;
     }
 
     // 从相册选择图片
@@ -120,6 +139,7 @@ public class ShareFragment extends Fragment {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+    // 处理选择图片的结果
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -216,16 +236,17 @@ public class ShareFragment extends Fragment {
                         .build();
 
                 // 发送请求
-                client.newCall(request).enqueue(callback);
+                client.newCall(request).enqueue(callbackSendImage);
             }).start();
         }
     }
 
-    private final Callback callback = new Callback() {
+    // 上传图片的回调
+    private final Callback callbackSendImage = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, @NonNull IOException e) {
             // 处理失败情况
-            Log.e("Upload", "Failed to upload images", e);
+            Log.e("ShareFragment callbackSendImage: ", e.toString());
             // 确保在主线程中显示 Toast
             getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "上传失败", Toast.LENGTH_SHORT).show());
         }
@@ -235,19 +256,23 @@ public class ShareFragment extends Fragment {
             // 处理服务器返回的数据
             String responseBody = Objects.requireNonNull(response.body()).string();
 
-            Log.d("Upload", "Server responded with: " + responseBody);
-
             try { // 解析服务器返回的JSON数据
                 JSONObject jsonResponse = new JSONObject(responseBody);
-                JSONObject data = jsonResponse.getJSONObject("data");
-                int code = jsonResponse.getInt("code");
 
-                if (code == 200) {
-                    getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "图片添加成功", Toast.LENGTH_SHORT).show());
+                String msg = jsonResponse.getString("msg");
 
-                    imageCode = data.getLong("imageCode");
+                if (jsonResponse.has("data") && !jsonResponse.isNull("data")) {
+                    JSONObject data = jsonResponse.getJSONObject("data");
+                    int code = jsonResponse.getInt("code");
 
+                    if (code == 200) {
+                        getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "图片添加成功", Toast.LENGTH_SHORT).show());
+                        imageCode = data.getLong("imageCode");
+                    }
                 }
+
+                Log.d("ShareFragment callbackSendImage: ", msg);
+
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
@@ -282,9 +307,16 @@ public class ShareFragment extends Fragment {
     // 处理保存分享
     private void saveShare() {
         new Thread(() -> {
-            String url = "http://10.33.2.136:8080/share/save";
+            String url = "https://api-store.openguet.cn/api/member/photo/share/save";
 
-            RequestQueue queue = Volley.newRequestQueue(context);
+            OkHttpClient client = new OkHttpClient();
+
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Content-Type", "application/json")
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
 
             // 构建请求参数
             JSONObject params = new JSONObject();
@@ -298,97 +330,132 @@ public class ShareFragment extends Fragment {
                 Log.d("ShareFragment", e.toString());
             }
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST,
-                    url,
-                    params,
-                    this::parseSaveShareResponse,
-                    error -> Log.d("LoginActivity", error.toString())
-            );
+            String json = params.toString();
+            RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
 
-            queue.add(jsonObjectRequest);
+
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(callbackSaveShare);
 
         }).start();
     }
 
-    /**
-     * 解析保存分享的JSON响应
-     * @param response 相应体信息
-     */
-    private void parseSaveShareResponse(JSONObject response) {
+    // 保存分享的回调
+    private final Callback callbackSaveShare = new Callback() {
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
 
-        try {
-            String msg = response.getString("msg");
-            shareListCode = response.getInt("code");
-            if (shareListCode == 200) {
-                getActivity().runOnUiThread(() -> {
-                    Toast.makeText(context, "保存成功", Toast.LENGTH_SHORT).show();
-                    Log.d("ShareFragment", response.toString());
-                });
-            } else {
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-                Log.d("ShareFragment", response.toString());
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                String msg = jsonResponse.getString("msg");
+                shareListCode = jsonResponse.getInt("code");
+
+                showInform(jsonResponse, msg);
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
             }
-
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
         }
 
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.d("ShareFragment", e.toString());
+        }
+    };
+
+    // 显示保存分享的提示信息
+    private void showInform(JSONObject jsonResponse, String msg) {
+        if (shareListCode == 200) {
+            getActivity().runOnUiThread(() -> {
+                Toast.makeText(context, "保存成功", Toast.LENGTH_SHORT).show();
+                Log.d("ShareFragment showInform: ", jsonResponse.toString());
+            });
+        } else {
+            getActivity().runOnUiThread(() -> {
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                Log.d("ShareFragment showInform: ", jsonResponse.toString());
+            });
+        }
     }
 
     // 处理获得保存分享列表
     private void getMyShareList() {
         new Thread(() -> {
-            String url = "http://10.34.17.152:8080/share/save" + "?userId=" + userId;
+            String url = "https://api-store.openguet.cn/api/member/photo/share/save" + "?userId=" + userId;
 
-            RequestQueue queue = Volley.newRequestQueue(context);
+            OkHttpClient client = new OkHttpClient();
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.GET,
-                    url,
-                    null,
-                    this::parseMyShareListResponse,
-                    error -> Log.d("LoginActivity", error.toString())
-            );
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Content-Type", "application/json")
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
 
-            queue.add(jsonObjectRequest);
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .get()
+                    .build();
+
+            client.newCall(request).enqueue(callbackGetShareList);
 
         }).start();
 
     }
 
-    /**
-     * 解析获得保存分享列表的JSON响应
-     * @param response 响应体信息
-     */
-    private void parseMyShareListResponse(JSONObject response) {
-        try {
-            int code = response.getInt("code");
-            JSONObject data = response.getJSONObject("data");
-
-            Log.d("getMyShareList", response.toString());
-
-            JSONArray recordsArray = data.getJSONArray("records");
-
-            if (code == 200) {
-                for (int i = 0; i < recordsArray.length(); i++) {
-
-                    JSONObject record = recordsArray.getJSONObject(i);
-
-                    Long singleImageCode = record.getLong("imageCode");
-
-                    if (singleImageCode.equals(imageCode)) {
-
-                        Log.d("record", record.toString());
-
-                        sendShare(record);
-                    }
-                }
-            } else {
-                Toast.makeText(context, "还未选中任何图片", Toast.LENGTH_SHORT).show();
-            }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+    // 获得保存分享列表的回调
+    private final Callback callbackGetShareList = new Callback() {
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.d("ShareFragment callbackGetShareList:", e.toString());
         }
-    }
+
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
+
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                String msg = jsonResponse.getString("msg");
+
+                JSONObject data = jsonResponse.getJSONObject("data");
+
+                JSONArray recordsArray = data.getJSONArray("records");
+
+                if (jsonResponse.has("data") && !jsonResponse.isNull("data")) {
+                    for (int i = 0; i < recordsArray.length(); i++) {
+
+                        JSONObject record = recordsArray.getJSONObject(i);
+
+                        Long singleImageCode = record.getLong("imageCode");
+
+                        if (singleImageCode.equals(imageCode)) {
+
+                            Log.d("record", record.toString());
+
+                            sendShare(record);
+                        }
+                    }
+                } else {
+                    getActivity().runOnUiThread(() -> Toast.makeText(context, "还未选中任何图片", Toast.LENGTH_SHORT).show());
+                }
+
+                Log.d("ShareFragment callbackGetShareList: ", msg);
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    };
 
     /**
      * 处理发送分享
@@ -396,9 +463,16 @@ public class ShareFragment extends Fragment {
      */
     private void sendShare(JSONObject record) {
         new Thread(() -> {
-            String url = "http://10.34.24.20:8080/share/add";
+            String url = "https://api-store.openguet.cn/api/member/photo/share/change";
 
-            RequestQueue queue = Volley.newRequestQueue(context);
+            OkHttpClient client = new OkHttpClient();
+
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Content-Type", "application/json")
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
 
             // 构建请求参数
             JSONObject params = new JSONObject();
@@ -413,16 +487,31 @@ public class ShareFragment extends Fragment {
                 Log.e("sendShare", Objects.requireNonNull(e.getMessage()));
             }
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST,
-                    url,
-                    params,
-                    response -> Log.d("sendShare", response.toString()),
-                    error -> Log.d("LoginActivity", error.toString())
-            );
+            String json = params.toString();
+            RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
 
-            queue.add(jsonObjectRequest);
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(callbackSendShare);
 
         }).start();
     }
+
+    // 更新分享的回调
+    private final Callback callbackSendShare = new Callback() {
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            Log.d("ShareFragment callbackSendShare", response.toString());
+        }
+
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.d("ShareFragment callbackSendShare", e.toString());
+        }
+    };
 
 }
