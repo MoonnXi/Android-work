@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.imagesharing.R;
 import com.imagesharing.bean.Record;
 import com.imagesharing.response.ApiResponse;
+import com.imagesharing.util.HeadersUtil;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -66,8 +67,9 @@ public class LikesActivity extends AppCompatActivity {
 
             // 请求头
             Headers headers = new Headers.Builder()
-                    .add("appId", "55bfc267a5a04e5baafaa64b423e551d")
-                    .add("appSecret", "923766af4a5d2542046adb0a5db6d2a9c3f0c")
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Content-Type", "application/json")
                     .add("Accept", "application/json, text/plain, */*")
                     .build();
 
@@ -140,7 +142,7 @@ public class LikesActivity extends AppCompatActivity {
             TextView contentTextView = convertView.findViewById(R.id.contentTextView);
             TextView authorTextView = convertView.findViewById(R.id.authorTextView);
             ImageView imageView = convertView.findViewById(R.id.imageView);
-            ImageButton likeButton = convertView.findViewById(R.id.likeButton);
+//            ImageButton likeButton = convertView.findViewById(R.id.likeButton);
 
             titleTextView.setText(item.getTitle());
             contentTextView.setText(item.getContent());
@@ -157,15 +159,15 @@ public class LikesActivity extends AppCompatActivity {
                 imageView.setImageResource(R.drawable.default_image2);
             }
 
-            // 设置点赞按钮的点击事件
-            likeButton.setOnClickListener(v -> {
-                item.toggleLike();
-                if (item.isLiked()) {
-                    likeButton.setImageResource(R.drawable.ic_like_selected2);
-                } else {
-                    likeButton.setImageResource(R.drawable.ic_like_unselected3);
-                }
-            });
+//            // 设置点赞按钮的点击事件
+//            likeButton.setOnClickListener(v -> {
+//                item.toggleLike();
+//                if (item.isLiked()) {
+//                    likeButton.setImageResource(R.drawable.ic_like_selected2);
+//                } else {
+//                    likeButton.setImageResource(R.drawable.ic_like_unselected3);
+//                }
+//            });
 
 //            // 设置点赞按钮的状态
 //            if (item.isLiked()) {

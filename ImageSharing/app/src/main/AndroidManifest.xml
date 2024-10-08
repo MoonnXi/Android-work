@@ -63,6 +63,7 @@
         <activity android:name=".view.SettingsActivity" />
         <activity android:name=".view.AboutUsActivity" />
         <activity android:name=".view.DraftsActivity" />
+        <activity android:name=".view.UpdateActivity" />
     </application>
 
 </manifest>

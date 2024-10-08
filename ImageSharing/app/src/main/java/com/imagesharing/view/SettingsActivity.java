@@ -2,6 +2,7 @@ package com.imagesharing.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void navigateToEditProfile() {
-        Intent intent = new Intent(this, EditProfileActivity.class);
+        Intent intent = new Intent(this, UpdateActivity.class);
         startActivity(intent);
     }
 
@@ -39,12 +40,11 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void handleLogout() {
-        // 实现退出登录的逻辑
-        // 可以在这里清除登录状态，跳转到登录页面等
-        // 示例：
-        // 清除登录状态
-        finish(); // 关闭当前设置页面
-        //Intent intent = new Intent(this, LoginActivity.class);
-        //startActivity(intent);
+
+        finish();
+
+        Toast.makeText(this, "已退出登录", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 }

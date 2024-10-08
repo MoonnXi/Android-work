@@ -3,27 +3,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     android:background="#EAEAEA">
 
-    <TextView
-        android:id="@+id/aboutUsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="关于我们"
-        android:layout_gravity="center"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"/>
+    <LinearLayout
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:gravity="center_horizontal|center_vertical"
+        android:paddingHorizontal="16dp"
+        android:elevation="5dp">
 
-    <TextView
-        android:id="@+id/aboutUsContentTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="欢迎使用 乐享！\n\n乐享 是一款专注于图片分享的应用程序，旨在帮助用户轻松分享生活中的美好瞬间。\n\n我们的愿景是通过图片连接世界各地的人们，分享快乐与美好。\n\n在这里，您可以随时随地上传照片，与朋友和家人分享生活的点滴。\n\n如果您有任何问题或建议，请随时联系我们。\n\n感谢您的支持！"
-        android:textSize="10sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="16dp"/>
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="关于我们"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#EAEAEA" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginTop="50dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="57dp"
+            android:gravity="center_horizontal"
+            android:src="@mipmap/ic_app"/>
+
+        <TextView
+            android:id="@+id/aboutUsContentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="16dp"
+            android:text="欢迎使用 乐享！\n\n乐享 是一款专注于图片分享的应用程序，旨在帮助用户轻松分享生活中的美好瞬间。\n\n我们的愿景是通过图片连接世界各地的人们，分享快乐与美好。\n\n在这里，您可以随时随地上传照片，与朋友和家人分享生活的点滴。\n\n如果您有任何问题或建议，请随时联系我们。\n\n感谢您的支持！"
+            android:textColor="@color/black"
+            android:textSize="10sp" />
+
+    </LinearLayout>
 </LinearLayout>

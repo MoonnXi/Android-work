@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.imagesharing.R;
 import com.imagesharing.bean.Record;
 import com.imagesharing.response.ApiResponse;
+import com.imagesharing.util.HeadersUtil;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -68,8 +69,9 @@ public class DraftsActivity extends AppCompatActivity {
 
             // 请求头
             Headers headers = new Headers.Builder()
-                    .add("appId", "0c43d325bd4c4077a2ef71afd51a2ac9")
-                    .add("appSecret", "1796311d4cb76a76e4c309e0ca1c6ff5a13c0")
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Content-Type", "application/json")
                     .add("Accept", "application/json, text/plain, */*")
                     .build();
 
