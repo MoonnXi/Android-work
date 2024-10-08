@@ -36,6 +36,10 @@ public class FocusActivity extends AppCompatActivity {
 
     private ListView followedActivitiesListView;
     private FollowedActivitiesAdapter followedActivitiesAdapter;
+
+    private TextView followedNum;
+    private TextView tvInfo;
+
     private static final String TAG = "FollowedActivitiesActivity";
     private Long userId;
 
@@ -45,6 +49,9 @@ public class FocusActivity extends AppCompatActivity {
         setContentView(R.layout.activity_followed_activities);
 
         userId = getIntent().getLongExtra("userId", -1);
+
+        followedNum = findViewById(R.id.followed_num);
+        tvInfo = findViewById(R.id.tv_info);
 
         // 初始化ListView
         followedActivitiesListView = findViewById(R.id.followedActivitiesListView);
@@ -108,12 +115,16 @@ public class FocusActivity extends AppCompatActivity {
                     // 更新UI
                     updateUI(records);
                 });
+            } else {
+                runOnUiThread(() -> tvInfo.setText("暂无任何关注"));
             }
         }
     };
 
     // 更新UI的方法
     private void updateUI(List<Record> items) {
+        String num = "(" + items.size() + ")";
+        followedNum.setText(num);
         followedActivitiesAdapter.setData(items);
         followedActivitiesAdapter.notifyDataSetChanged();
     }

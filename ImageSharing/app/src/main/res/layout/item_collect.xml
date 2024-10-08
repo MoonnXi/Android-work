@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@drawable/rounded_rectangle"
-    android:padding="5dp">
+    android:padding="16dp">
 
     <ImageView
         android:id="@+id/imageView"
@@ -72,7 +73,8 @@
                 android:layout_marginBottom="1dp"
                 android:background="@null"
                 android:onClick="onLikeButtonClick"
-                android:src="@drawable/ic_collection2" />
+                android:src="@drawable/ic_collection2"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
         </LinearLayout>
 

@@ -3,7 +3,11 @@ package com.imagesharing.view;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,7 +29,13 @@ public class NavigationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_navigation);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+            return insets;
+        });
 
         Intent intent = getIntent();
         userId = intent.getLongExtra("userId", -1);
@@ -38,6 +48,7 @@ public class NavigationActivity extends AppCompatActivity {
 
         // 默认选中第一个页面
         selectedFragment(0);
+
     }
 
     // 监听底部导航栏的点击事件
@@ -99,4 +110,5 @@ public class NavigationActivity extends AppCompatActivity {
         if (shareFragment != null) fragmentTransaction.hide(shareFragment);
         if (meFragment != null) fragmentTransaction.hide(meFragment);
     }
+
 }

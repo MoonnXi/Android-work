@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,10 +23,24 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
 import com.imagesharing.R;
+import com.imagesharing.util.HeadersUtil;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -114,58 +129,95 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void login(String password, String username) {
         new Thread(() -> {
-            RequestQueue queue = Volley.newRequestQueue(this);
 
-            String url = "http://10.34.24.20:8080/user/login?password=" + password + "&username=" + username;
+            String url = "https://api-store.openguet.cn/api/member/photo/user/login?password=" + password + "&username=" + username;
 
-            StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
-                parseJsonResponse(response);
+            OkHttpClient client = new OkHttpClient();
 
-                if (cbRemember.isChecked()) { // 如果勾选了记住密码，则保存用户名和密码
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(KEY_USERNAME, username);
-                    editor.putString(KEY_PASSWORD, password);
-                    editor.putBoolean(KEY_REMEMBER, cbRemember.isChecked());
-                    editor.apply();
-                }
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Content-Type", "application/json")
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
 
-            }, error -> { // 处理请求失败
-                Log.d("LoginActivity", "Error: " + error.getMessage());
-            });
-            queue.add(request);
+            // 构建请求参数
+            JSONObject params = new JSONObject();
+            try {
+                params.put("username", username);
+                params.put("password", password);
+
+            } catch (Exception e) {
+                Log.d("FirstCommentActivity", e.toString());
+            }
+
+            String json = params.toString();
+            RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(callbackLogin);
+
+            if (cbRemember.isChecked()) { // 如果勾选了记住密码，则保存用户名和密码
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(KEY_USERNAME, username);
+                editor.putString(KEY_PASSWORD, password);
+                editor.putBoolean(KEY_REMEMBER, cbRemember.isChecked());
+                editor.apply();
+            }
+
         }).start();
     }
 
-    /**
-     * 解析JSON响应
-     * @param response JSON响应
-     */
-    private void parseJsonResponse(String response) {
-        try {
-            JSONObject jsonResponse = new JSONObject(response);
+    // 登录请求回调
+    private final Callback callbackLogin = new Callback() {
 
-            String msg = jsonResponse.getString("msg");
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
 
-            JSONObject data = jsonResponse.getJSONObject("data");
-            Long id = data.getLong("id");
-            String username = data.getString("username");
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
 
-            // 启动 NavigationActivity 并传递 userId
-            Intent intent = new Intent(this, NavigationActivity.class);
-            intent.putExtra("userId", id);
-            intent.putExtra("username", username);
-            startActivity(intent);
-            finish();
+                String msg = jsonResponse.getString("msg");
 
-            // 另起一个线程在界面显示信息
-            runOnUiThread(() -> {
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                Log.d("LoginActivity", response);
-            });
-        } catch (Exception e) {
-            Log.e("LoginActivity", "Error parsing JSON response: " + e.getMessage());
+                if (jsonResponse.has("data") && !jsonResponse.isNull("data")) {
+                    JSONObject data = jsonResponse.getJSONObject("data");
+                    Long id = data.getLong("id");
+                    String username = data.getString("username");
+
+                    // 另起一个线程在界面显示信息
+                    runOnUiThread(() -> {
+                        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    });
+
+                    activityJump(id, username);
+                }
+
+                Log.d("LoginActivity ", msg);
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
         }
-    }
 
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.d("LoginActivity", "Error: " + e.getMessage());
+        }
+    };
+
+    private void activityJump(Long id, String username) {
+        // 启动 NavigationActivity 并传递 userId
+        Intent intent = new Intent(this, NavigationActivity.class);
+        intent.putExtra("userId", id);
+        intent.putExtra("username", username);
+        startActivity(intent);
+        finish();
+    }
 
 }

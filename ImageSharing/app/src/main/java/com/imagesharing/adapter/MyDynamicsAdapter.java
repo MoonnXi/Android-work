@@ -7,7 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -21,72 +24,55 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class MyDynamicsAdapter extends BaseAdapter {
-    private List<JSONObject> records;
-    private Context context;
+public class MyDynamicsAdapter extends ArrayAdapter<Record> {
+    private List<Record> items;
 
-    public MyDynamicsAdapter(Context context, List<JSONObject> records) {
-        this.records = records;
-        this.context = context;
+    public MyDynamicsAdapter(Context context, List<Record> items) {
+        super(context, R.layout.item_my_dynamics, items);
+        this.items = items;
     }
 
-    @Override
-    public int getCount() {
-        return records.size();
-    }
-
-    @Override
-    public Object getItem(int i) {
-        return records.get(i);
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
-
+    @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_my_dynamics, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_my_dynamics, parent, false);
         }
 
+        Record item = items.get(position);
         TextView titleTextView = convertView.findViewById(R.id.titleTextView);
         TextView contentTextView = convertView.findViewById(R.id.contentTextView);
         TextView timeTextView = convertView.findViewById(R.id.timeTextView);
         ImageView imageView = convertView.findViewById(R.id.imageView);
 
-        JSONObject record = records.get(position);
+        titleTextView.setText(item.getTitle());
+        contentTextView.setText(item.getContent());
+        timeTextView.setText(item.getCreateTime());
 
-        try {
-            titleTextView.setText(record.getString("title"));
-            contentTextView.setText(record.getString("content"));
-            timeTextView.setText(record.getString("createTime"));
-
-            if (record.isNull("imageUrl")) {
-                JSONArray imageUrlList = record.getJSONArray("imageUrlList");
-                loadImages(imageUrlList, imageView);
-            } else {
-                imageView.setImageResource(R.drawable.default_image2);
-            }
-
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+        // 检查 imageUrlList 是否为空
+        List<String> imageUrlList = item.getImageUrlList();
+        if (imageUrlList != null && !imageUrlList.isEmpty()) {
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    250, // 宽度为 100dp
+                    250  // 高度为 100dp
+            );
+            imageView.setLayoutParams(params);
+            // 加载图片
+            Picasso.get().load(imageUrlList.get(0)).into(imageView);
+        } else {
+            // 使用默认图片或不显示图片
+            // 例如，使用默认图片
+            imageView.setImageResource(R.drawable.default_image2);
         }
 
 
         return convertView;
     }
 
-    private void loadImages(JSONArray imageUrlList, ImageView ivImage) throws JSONException {
-        int count = Math.min(imageUrlList.length(), 3);
-        for (int i = 0; i < count; i++) {
-            String imageUrl = imageUrlList.getString(i);
-            Glide.with(context)
-                    .load(imageUrl)
-                    .apply(new RequestOptions().placeholder(R.drawable.ic_miss))
-                    .into(ivImage);
-        }
+    public void setData(List<Record> newData) {
+        this.items.clear();
+        this.items.addAll(newData);
+        notifyDataSetChanged();
     }
-
 }
