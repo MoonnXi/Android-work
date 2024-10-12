@@ -1,7 +1,6 @@
 package com.imagesharing.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 
@@ -15,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -25,7 +23,6 @@ import com.android.volley.toolbox.Volley;
 import com.imagesharing.R;
 import com.imagesharing.adapter.ListAdapter;
 import com.imagesharing.util.HeadersUtil;
-import com.imagesharing.view.SearchActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,59 +42,25 @@ import okhttp3.Response;
 public class HomeFragment extends Fragment {
 
     private Long userId;
+    private String username;
+
     private ListAdapter adapter;
-    private SearchView searchView;
+
     private GridView shareList;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private TextView text;
 
-    public HomeFragment(Long userId) {
-            this.userId = userId;
-        }
+    public HomeFragment(Long userId, String username) {
+        this.userId = userId;
+        this.username = username;
+    }
 
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         shareList = view.findViewById(R.id.share_list);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
-
-            text = view.findViewById(R.id.tv_search);
-
-            searchView = view.findViewById(R.id.search_view1);
-            searchView.setOnSearchClickListener(v -> {
-                text.setVisibility(View.INVISIBLE);
-            });
-            searchView.setOnCloseListener(() -> {
-                text.setVisibility(View.VISIBLE);
-                return false;
-            });
-            // 设置查询文本变化监听器
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    // 当用户点击搜索按钮或者按下键盘上的搜索键时触发
-
-                    String keyword = query.trim();
-                    System.out.println("搜索关键词：" + keyword);
-                    if (!keyword.isEmpty()) {
-                        Intent intent = new Intent(getContext(), SearchActivity.class);
-                        intent.putExtra("keyword", keyword);
-                        startActivity(intent);
-                    }
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    // 当查询文本发生变化时触发
-                    // 可以在这里做实时搜索建议等功能
-                    return false; // 返回false表示不做任何操作
-                }
-            });
 
         // 初始化首页列表数据
         initShareList();
@@ -155,8 +118,8 @@ public class HomeFragment extends Fragment {
         }).start();
     }
 
-    // 初始化首页
-    private Callback callback = new Callback() {
+    // 初始化首页列表回调
+    private final Callback callback = new Callback() {
 
         @Override
         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
@@ -198,9 +161,9 @@ public class HomeFragment extends Fragment {
     // 构建首页列表适配器
     private void updateShareList(List<JSONObject> records) {
         getActivity().runOnUiThread(() -> {
-            adapter = new ListAdapter(records, requireContext(), userId);
+            adapter = new ListAdapter(records, requireContext(), userId, username);
             shareList.setAdapter(adapter);
         });
     }
 
- }
+}

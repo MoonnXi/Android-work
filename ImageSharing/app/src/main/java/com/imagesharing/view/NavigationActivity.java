@@ -25,6 +25,7 @@ public class NavigationActivity extends AppCompatActivity {
 
     private Long userId;
     private String username;
+    private String avatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class NavigationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userId = intent.getLongExtra("userId", -1);
         username = intent.getStringExtra("username");
+        avatar = intent.getStringExtra("avatar");
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -76,7 +78,7 @@ public class NavigationActivity extends AppCompatActivity {
         switch (position) {
             case 0:
                 if (homeFragment == null) {
-                    homeFragment = new HomeFragment(userId);
+                    homeFragment = new HomeFragment(userId, username);
                     fragmentTransaction.add(R.id.fragment_container, homeFragment);
                 } else {
                     fragmentTransaction.show(homeFragment);
@@ -92,7 +94,7 @@ public class NavigationActivity extends AppCompatActivity {
                 break;
             case 2:
                 if (meFragment == null) {
-                    meFragment = new MeFragment(userId, username);
+                    meFragment = new MeFragment(userId, username, avatar);
                     fragmentTransaction.add(R.id.fragment_container, meFragment);
                 } else {
                     fragmentTransaction.show(meFragment);
