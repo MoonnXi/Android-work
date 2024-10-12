@@ -5,18 +5,22 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -48,12 +52,15 @@ public class ShareDetailActivity extends AppCompatActivity {
     private TextView ivUsername;
     private TextView tvTitle;
     private TextView tvContent;
-    private GridView gvImage;
+
+    private RecyclerView gvImage;
     private ImageView ivImage;
 
-    private ListView commentList;
+    private RecyclerView commentList;
     private EditText etContent;
     private Button btnComment;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private Long userId;
     private Long shareId;
@@ -66,7 +73,7 @@ public class ShareDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        // 点击输入框时键盘不遮挡输入框
+        // 点击输入框时键盘不会遮挡输入框
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN|
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
@@ -99,11 +106,15 @@ public class ShareDetailActivity extends AppCompatActivity {
         etContent = findViewById(R.id.et_content);
         btnComment = findViewById(R.id.btn_comment);
 
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+
         initShareDetail();
 
         initCommentList();
 
         btnCommentClick();
+
+        reLoadShareList();
 
     }
 
@@ -117,6 +128,29 @@ public class ShareDetailActivity extends AppCompatActivity {
                 etContent.setText("");
                 initCommentList();
             }
+        });
+    }
+
+    // 下拉刷新页面数据
+    private void reLoadShareList() {
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // 开始刷新时显示提示
+            swipeRefreshLayout.setRefreshing(true);
+            new Thread(() -> {
+                // 模拟网络请求时间
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // 在主线程更新UI
+                runOnUiThread(() -> {
+                    // 重新加载数据
+                    initCommentList();
+                    // 刷新结束，关闭刷新动画
+                    swipeRefreshLayout.setRefreshing(false);
+                });
+            }).start();
         });
     }
 
@@ -209,6 +243,9 @@ public class ShareDetailActivity extends AppCompatActivity {
 
     // 加载图片内容
     private void loadImages(JSONArray imageUrlList) throws JSONException {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        gvImage.setLayoutManager(layoutManager);
+        gvImage.setLayoutManager(new GridLayoutManager(this, 3));
         gvImage.setAdapter(new DetailImageAdapter(this, imageUrlList));
     }
 
@@ -280,6 +317,13 @@ public class ShareDetailActivity extends AppCompatActivity {
     // 初始化一级评论列表UI
     private void updateCommentList(List<JSONObject> records) {
         runOnUiThread(() -> {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            commentList.setLayoutManager(layoutManager);
+
+            DividerItemDecoration divider = new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);
+            divider.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.comment_list_divider)));
+            commentList.addItemDecoration(divider);
+
             commentList.setAdapter(new CommentListAdapter(records, this));
         });
     }
