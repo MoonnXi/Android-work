@@ -73,7 +73,7 @@ public class ShareDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        // 点击输入框时键盘不遮挡输入框
+        // 点击输入框时键盘不会遮挡输入框
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN|
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
