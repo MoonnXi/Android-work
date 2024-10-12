@@ -108,14 +108,14 @@ public class ShareFragment extends Fragment {
     // 保存按钮点击事件
     private void btnSaveClick(Button btnSave) {
         btnSave.setOnClickListener(v -> {
-            if (shareListCode == 200) {
-                saveShare();
-            } else if (imageCode == null) {
+            if (imageCode == null) {
                 Toast.makeText(getContext(), "请至少选择一张图片", Toast.LENGTH_SHORT).show();
-            } else if (etTitle.getText().toString().isEmpty()) {
+            }  else if (etTitle.getText().toString().isEmpty()) {
                 Toast.makeText(getContext(), "请输入标题", Toast.LENGTH_SHORT).show();
             } else if (etContent.getText().toString().isEmpty()) {
                 Toast.makeText(getContext(), "请输入内容", Toast.LENGTH_SHORT).show();
+            } else {
+                saveShare();
             }
         });
     }
@@ -272,6 +272,7 @@ public class ShareFragment extends Fragment {
                 }
 
                 Log.d("ShareFragment callbackSendImage: ", msg);
+                Log.d("ShareFragment callbackSendImage: ", imageCode.toString());
 
             } catch (JSONException e) {
                 throw new RuntimeException(e);

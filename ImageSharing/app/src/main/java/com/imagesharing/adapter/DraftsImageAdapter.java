@@ -1,7 +1,6 @@
 package com.imagesharing.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,12 +11,12 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public class NewImageAdapter extends BaseAdapter {
+public class DraftsImageAdapter extends BaseAdapter {
 
     private Context context;
     private List<String> imageUrlList;
 
-    public NewImageAdapter(Context context, List<String> imageUrlList) {
+    public DraftsImageAdapter(Context context, List<String> imageUrlList) {
         this.context = context;
         this.imageUrlList = imageUrlList;
     }

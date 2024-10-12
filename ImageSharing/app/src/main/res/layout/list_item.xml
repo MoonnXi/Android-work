@@ -16,67 +16,71 @@
         <ImageView
             android:id="@+id/iv_image"
             android:layout_width="190dp"
-            android:layout_height="240dp"
+            android:layout_height="260dp"
             android:scaleType="centerCrop"
             android:alpha="0.8" />
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="210dp"
-            android:alpha="0.5"
-            android:text="你好，世界！"
-            android:textColor="@color/black"
-            android:textSize="15sp" />
+        <RelativeLayout
+            android:layout_width="190dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:padding="5dp"
+            android:background="@drawable/share_list_item_gradient_background">
 
-        <!--点赞-->
-        <ImageView
-            android:id="@+id/iv_like"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:src="@drawable/ic_like"
-            android:alpha="0.8"
-            android:clickable="true"
-            android:layout_marginTop="210dp"
-            android:layout_marginStart="110dp"
-            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.5"
+                android:text="你好，世界！"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
 
-        <TextView
-            android:id="@+id/tv_likeNumbers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:alpha="0.5"
-            android:layout_marginStart="130dp"
-            android:layout_marginTop="210dp"
-            android:layout_toRightOf="@id/iv_like"/>
+            <!--点赞-->
+            <ImageView
+                android:id="@+id/iv_like"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:alpha="0.8"
+                android:src="@drawable/ic_like"
+                android:layout_marginStart="105dp"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
-        <!--收藏-->
-        <ImageView
-            android:id="@+id/iv_collect"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_collect"
-            android:alpha="0.8"
-            android:clickable="true"
-            android:layout_marginStart="150dp"
-            android:layout_marginTop="210dp"
-            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck"/>
+            <TextView
+                android:id="@+id/tv_likeNumbers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.5"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginStart="5dp"
+                android:layout_toRightOf="@id/iv_like"/>
 
-        <TextView
-            android:id="@+id/tv_collectNumbers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:alpha="0.5"
-            android:layout_marginStart="170dp"
-            android:layout_marginTop="210dp"/>
+            <!--收藏-->
+            <ImageView
+                android:id="@+id/iv_collect"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:alpha="0.8"
+                android:clickable="true"
+                android:src="@drawable/ic_collect_02"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@id/tv_likeNumbers"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+            <TextView
+                android:id="@+id/tv_collectNumbers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.5"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginStart="5dp"
+                android:layout_toRightOf="@id/iv_collect"/>
+
+        </RelativeLayout>
 
     </FrameLayout>
 
