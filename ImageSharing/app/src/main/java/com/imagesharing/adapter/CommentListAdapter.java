@@ -4,8 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.imagesharing.R;
 
@@ -14,79 +16,51 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class CommentListAdapter extends BaseAdapter {
+public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder> {
 
     private final List<JSONObject> records;
     private final Context context;
-
-    private Long commentId;
-    private Long shareId;
 
     public CommentListAdapter(List<JSONObject> records, Context context) {
         this.records = records;
         this.context = context;
     }
 
+    @NonNull
     @Override
-    public int getCount() {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_comment, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        JSONObject record = records.get(position);
+
+        try {
+            holder.tvUsername.setText(record.getString("userName"));
+            holder.tvContent.setText(record.getString("content"));
+            holder.tvTime.setText(record.getString("createTime"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
         return records.size();
     }
 
-    @Override
-    public Object getItem(int i) {
-        return records.get(i);
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        ViewHolder holder;
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.item_comment, viewGroup, false);
-            holder = new ViewHolder(view, context);
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) view.getTag();
-        }
-        holder.bind(records, i);
-
-        return view;
-    }
-
-    public class ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvUsername;
         TextView tvContent;
         TextView tvTime;
 
-        Context context;
-
-        ViewHolder(View view, Context context) {
-            tvUsername = view.findViewById(R.id.tv_username);
-            tvContent = view.findViewById(R.id.tv_content);
-            tvTime = view.findViewById(R.id.tv_time);
-
-            this.context = context;
+        ViewHolder(View itemView) {
+            super(itemView);
+            tvUsername = itemView.findViewById(R.id.tv_username);
+            tvContent = itemView.findViewById(R.id.tv_content);
+            tvTime = itemView.findViewById(R.id.tv_time);
         }
-
-        void bind(List<JSONObject> records, int position) {
-            JSONObject record = records.get(position);
-
-            try {
-                tvUsername.setText(record.getString("userName"));
-                tvContent.setText(record.getString("content"));
-                tvTime.setText(record.getString("createTime"));
-
-                commentId = record.getLong("id");
-                shareId = record.getLong("shareId");
-
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
     }
 }

@@ -2,7 +2,6 @@ package com.imagesharing.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +9,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -76,7 +72,7 @@ public class ListAdapter extends BaseAdapter {
         return view;
     }
 
-    public class ViewHolder {
+    public static class ViewHolder {
         ImageView ivImage;
         TextView tvTitle;
         TextView tvLikeNumbers;
@@ -102,7 +98,13 @@ public class ListAdapter extends BaseAdapter {
         void bind(List<JSONObject> records, int position) {
             JSONObject record = records.get(position);
             try {
-                tvTitle.setText(record.getString("title"));
+                String title = record.getString("title");
+                if (title.length() > 6) {
+                    String newTitle = title.substring(0, 6) + "...";
+                    tvTitle.setText(newTitle);
+                } else {
+                    tvTitle.setText(title);
+                }
                 tvLikeNumbers.setText(record.getString("likeNum"));
                 tvCollectNumbers.setText(record.getString("collectNum"));
 
