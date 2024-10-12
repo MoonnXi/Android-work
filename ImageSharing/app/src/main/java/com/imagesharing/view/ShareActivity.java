@@ -14,7 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.imagesharing.R;
-import com.imagesharing.adapter.DraftsImageAdapter;
+import com.imagesharing.adapter.NewImageAdapter;
 import com.imagesharing.util.HeadersUtil;
 
 import org.json.JSONObject;
@@ -71,7 +71,7 @@ public class ShareActivity extends AppCompatActivity {
 
         btnSend = findViewById(R.id.btn_send);
 
-        DraftsImageAdapter adapter = new DraftsImageAdapter(this, imageUrlList);
+        NewImageAdapter adapter = new NewImageAdapter(this, imageUrlList);
         gvImage.setAdapter(adapter);
 
         etTitle.setText(title);

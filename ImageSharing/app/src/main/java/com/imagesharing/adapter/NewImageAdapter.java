@@ -11,12 +11,12 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public class DraftsImageAdapter extends BaseAdapter {
+public class NewImageAdapter extends BaseAdapter {
 
     private Context context;
     private List<String> imageUrlList;
 
-    public DraftsImageAdapter(Context context, List<String> imageUrlList) {
+    public NewImageAdapter(Context context, List<String> imageUrlList) {
         this.context = context;
         this.imageUrlList = imageUrlList;
     }
