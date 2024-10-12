@@ -1,6 +1,7 @@
 package com.imagesharing.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,11 +11,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.imagesharing.R;
+import com.imagesharing.view.ShareDetailActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,14 +28,20 @@ import java.util.Objects;
 
 public class ListAdapter extends BaseAdapter {
 
-    private List<JSONObject> records;
-    private Context context;
-    private Long userId;
+    private final List<JSONObject> records;
+    private final Context context;
+    private final Long userId;
+    private final String userName;
 
-    public ListAdapter(List<JSONObject> records, Context context, Long userId) {
+    private Long shareId;
+    private String avatar;
+    private String username;
+
+    public ListAdapter(List<JSONObject> records, Context context, Long userId, String userName) {
         this.records = records;
         this.context = context;
         this.userId = userId;
+        this.userName = userName;
     }
 
     @Override
@@ -62,10 +71,12 @@ public class ListAdapter extends BaseAdapter {
         }
         holder.bind(records, i);
 
+        setCardClick(view, i);
+
         return view;
     }
 
-    public static class ViewHolder {
+    public class ViewHolder {
         ImageView ivImage;
         TextView tvTitle;
         TextView tvLikeNumbers;
@@ -118,6 +129,30 @@ public class ListAdapter extends BaseAdapter {
             }
         }
 
+    }
+
+    public void setCardClick(View view, int i) {
+        view.setOnClickListener(v -> {
+            try {
+                JSONObject record = records.get(i);
+
+                shareId = record.getLong("id");
+                avatar = record.getString("avatar");
+                username = record.getString("username");
+                Log.d("ListAdapter", "shareId: " + shareId);
+
+                Intent intent = new Intent(context, ShareDetailActivity.class);
+                intent.putExtra("userId", userId);
+                intent.putExtra("shareId", shareId);
+                intent.putExtra("avatar", avatar);
+                intent.putExtra("username", username);
+                intent.putExtra("userName", userName);
+                context.startActivity(intent);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 }

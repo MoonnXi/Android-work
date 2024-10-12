@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.imagesharing.bean.Record;
 import com.imagesharing.response.ApiResponse;
@@ -43,12 +46,16 @@ public class MeFragment extends Fragment {
     private LinearLayout historyLayout;
     private LinearLayout settingsLayout;
 
+    private ImageView profileImage;
+
     private final Long userId;
     private final String username;
+    private final String avatar;
 
-    public MeFragment(Long userId, String username) {
+    public MeFragment(Long userId, String username, String avatar) {
         this.userId = userId;
         this.username = username;
+        this.avatar = avatar;
     }
 
     @Nullable
@@ -65,6 +72,9 @@ public class MeFragment extends Fragment {
         historyLayout = view.findViewById(R.id.history_layout);
         settingsLayout = view.findViewById(R.id.settings_layout);
 
+        profileImage = view.findViewById(R.id.profile_image);
+        setProfileImage();
+
         TextView myUsername = view.findViewById(R.id.my_username);
         myUsername.setText(username);
 
@@ -80,6 +90,15 @@ public class MeFragment extends Fragment {
         fetchFollowedActivities();
 
         return view;
+    }
+
+    // 初始化用户头像
+    private void setProfileImage() {
+        Glide.with(this)
+                .load(avatar)
+                .apply(RequestOptions.circleCropTransform())
+                .placeholder(R.drawable.girlpng)
+                .into(profileImage);
     }
 
     // 获取我的动态列表

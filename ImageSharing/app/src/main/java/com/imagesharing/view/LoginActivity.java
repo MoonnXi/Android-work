@@ -57,6 +57,10 @@ public class LoginActivity extends AppCompatActivity {
     private static final String KEY_PASSWORD = "login_password";
     private static final String KEY_REMEMBER = "login_remember";
 
+    private Long id;
+    private String username;
+    private String avatar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,15 +191,17 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (jsonResponse.has("data") && !jsonResponse.isNull("data")) {
                     JSONObject data = jsonResponse.getJSONObject("data");
-                    Long id = data.getLong("id");
-                    String username = data.getString("username");
+
+                    id = data.getLong("id");
+                    username = data.getString("username");
+                    avatar = data.getString("avatar");
 
                     // 另起一个线程在界面显示信息
                     runOnUiThread(() -> {
                         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                     });
 
-                    activityJump(id, username);
+                    activityJump();
                 }
 
                 Log.d("LoginActivity ", msg);
@@ -211,11 +217,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     };
 
-    private void activityJump(Long id, String username) {
+    private void activityJump() {
         // 启动 NavigationActivity 并传递 userId
         Intent intent = new Intent(this, NavigationActivity.class);
         intent.putExtra("userId", id);
         intent.putExtra("username", username);
+        intent.putExtra("avatar", avatar);
         startActivity(intent);
         finish();
     }
