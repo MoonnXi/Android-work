@@ -2,6 +2,7 @@ package com.imagesharing.view;
 
 import android.os.Bundle;
 import android.util.Log;
+<<<<<<< Updated upstream
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +11,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+=======
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
+>>>>>>> Stashed changes
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -21,7 +27,10 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.imagesharing.R;
+<<<<<<< Updated upstream
 import com.imagesharing.adapter.CommentListAdapter;
+=======
+>>>>>>> Stashed changes
 import com.imagesharing.adapter.DetailImageAdapter;
 import com.imagesharing.util.HeadersUtil;
 
@@ -30,16 +39,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+<<<<<<< Updated upstream
 import java.util.ArrayList;
+=======
+>>>>>>> Stashed changes
 import java.util.List;
 import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
+<<<<<<< Updated upstream
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+=======
+import okhttp3.OkHttpClient;
+>>>>>>> Stashed changes
 import okhttp3.Response;
 
 public class ShareDetailActivity extends AppCompatActivity {
@@ -49,6 +65,7 @@ public class ShareDetailActivity extends AppCompatActivity {
     private TextView tvTitle;
     private TextView tvContent;
     private GridView gvImage;
+<<<<<<< Updated upstream
     private ImageView ivImage;
 
     private ListView commentList;
@@ -60,6 +77,11 @@ public class ShareDetailActivity extends AppCompatActivity {
     private String avatar;
     private String username;
     private String userName;
+=======
+
+    private Long userId;
+    private Long shareId;
+>>>>>>> Stashed changes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,15 +101,19 @@ public class ShareDetailActivity extends AppCompatActivity {
 
         userId = getIntent().getLongExtra("userId", 0);
         shareId = getIntent().getLongExtra("shareId", 0);
+<<<<<<< Updated upstream
         avatar = getIntent().getStringExtra("avatar");
         username = getIntent().getStringExtra("username");
         userName = getIntent().getStringExtra("userName");
+=======
+>>>>>>> Stashed changes
 
         ivAvatar = findViewById(R.id.iv_avatar);
         ivUsername = findViewById(R.id.tv_username);
         tvTitle = findViewById(R.id.tv_title);
         tvContent = findViewById(R.id.tv_content);
         gvImage = findViewById(R.id.gv_image);
+<<<<<<< Updated upstream
         ivImage = findViewById(R.id.iv_image);
 
         // 返回图标
@@ -120,6 +146,16 @@ public class ShareDetailActivity extends AppCompatActivity {
         });
     }
 
+=======
+
+        ImageView ivBack = findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(v -> finish());
+
+        initShareDetail();
+
+    }
+
+>>>>>>> Stashed changes
     // 初始化分享详情
     private void initShareDetail() {
         new Thread(() -> {
@@ -140,7 +176,10 @@ public class ShareDetailActivity extends AppCompatActivity {
                     .build();
 
             client.newCall(request).enqueue(callBackInitShareDetail);
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         }).start();
     }
 
@@ -170,7 +209,11 @@ public class ShareDetailActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(@NonNull Call call, @NonNull IOException e) {
+<<<<<<< Updated upstream
             Log.e("initShareDetail", "callBackInitShareDetail " + e.getMessage());
+=======
+            Log.e("initShareDetail", "callBackInitShareDetail" + e.getMessage());
+>>>>>>> Stashed changes
         }
     };
 
@@ -179,6 +222,7 @@ public class ShareDetailActivity extends AppCompatActivity {
         runOnUiThread(() -> {
             try {
                 // 加载头像
+<<<<<<< Updated upstream
                 Glide.with(this)
                         .load(avatar)
                         .apply(RequestOptions.circleCropTransform())
@@ -186,11 +230,22 @@ public class ShareDetailActivity extends AppCompatActivity {
                         .into(ivAvatar);
 
                 ivUsername.setText(username);
+=======
+                String avatar = data.getString("avatar");
+                Log.d("updateShareDetail", "头像地址：" + avatar);
+                Glide.with(this)
+                        .load(avatar)
+                        .apply(new RequestOptions().placeholder(R.drawable.girlpng))
+                        .into(ivAvatar);
+
+                ivUsername.setText(data.getString("username"));
+>>>>>>> Stashed changes
                 tvTitle.setText(data.getString("title"));
                 tvContent.setText(data.getString("content"));
 
                 // 加载图片内容
                 JSONArray imageUrlList = data.getJSONArray("imageUrlList");
+<<<<<<< Updated upstream
 
                 if (imageUrlList.length() == 1) {
                     Glide.with(this)
@@ -200,6 +255,9 @@ public class ShareDetailActivity extends AppCompatActivity {
                 } else {
                     loadImages(imageUrlList);
                 }
+=======
+                loadImages(imageUrlList);
+>>>>>>> Stashed changes
 
             } catch (JSONException e) {
                 throw new RuntimeException(e);
@@ -212,6 +270,7 @@ public class ShareDetailActivity extends AppCompatActivity {
         gvImage.setAdapter(new DetailImageAdapter(this, imageUrlList));
     }
 
+<<<<<<< Updated upstream
     // 初始化评论列表
     private void initCommentList() {
         new Thread(() -> {
@@ -338,4 +397,6 @@ public class ShareDetailActivity extends AppCompatActivity {
         }
     };
 
+=======
+>>>>>>> Stashed changes
 }
