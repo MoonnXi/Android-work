@@ -1,5 +1,5 @@
 package com.imagesharing.bean;
-
+//用于存储和处理用户的图片、动态和草稿信息
 import com.google.gson.annotations.SerializedName;
 import com.imagesharing.bean.DraftItem;
 

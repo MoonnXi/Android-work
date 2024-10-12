@@ -9,11 +9,18 @@
     tools:context=".view.ShareDetailActivity">
 
     <RelativeLayout
+<<<<<<< Updated upstream
         android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:background="@color/deep_blue"
         android:layout_alignParentTop="true">
+=======
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="@color/deep_blue"
+        android:orientation="horizontal">
+>>>>>>> Stashed changes
 
         <ImageView
             android:id="@+id/iv_back"
@@ -63,6 +70,7 @@
             android:layout_alignParentEnd="true"/>
     </RelativeLayout>
 
+<<<<<<< Updated upstream
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -158,6 +166,85 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:background="@color/white">
+=======
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="不喜欢学习"
+            android:textSize="20sp"
+            android:textColor="#1C1C1C"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:text="今天又是学安卓的一天"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:id="@+id/rl_image"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@id/et_content">
+
+            <GridView
+                android:id="@+id/gv_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numColumns="3" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/iv_like"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="300dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/ic_like" />
+
+            <ImageView
+                android:id="@+id/iv_collect"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="17dp"
+                android:background="@drawable/ic_collect" />
+
+            <!--            <ImageView-->
+            <!--                android:id="@+id/iv_reply"-->
+            <!--                android:layout_width="25dp"-->
+            <!--                android:layout_height="25dp"-->
+            <!--                android:layout_marginStart="20dp"-->
+            <!--                android:layout_marginTop="20dp"-->
+            <!--                android:background="@drawable/ic_reply" />-->
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/first_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+>>>>>>> Stashed changes
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_content"
