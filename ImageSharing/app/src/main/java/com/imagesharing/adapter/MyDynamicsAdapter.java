@@ -40,14 +40,50 @@ public class MyDynamicsAdapter extends ArrayAdapter<Record> {
         }
 
         Record item = items.get(position);
+        ImageView avatarImageView = convertView.findViewById(R.id.avatarImageView);
+        TextView usernameTextView = convertView.findViewById(R.id.usernameTextView);
         TextView titleTextView = convertView.findViewById(R.id.titleTextView);
         TextView contentTextView = convertView.findViewById(R.id.contentTextView);
-        TextView timeTextView = convertView.findViewById(R.id.timeTextView);
+        //TextView timeTextView = convertView.findViewById(R.id.timeTextView);
         ImageView imageView = convertView.findViewById(R.id.imageView);
+        TextView likeTextView = convertView.findViewById(R.id.likeTextView);
+        TextView collectTextView = convertView.findViewById(R.id.collectTextView);
 
         titleTextView.setText(item.getTitle());
         contentTextView.setText(item.getContent());
-        timeTextView.setText(item.getCreateTime());
+        usernameTextView.setText(item.getUsername());
+        Glide.with(avatarImageView).load(item.getAvatar()).apply(RequestOptions.circleCropTransform()).into(avatarImageView);
+//        likeTextView.setText(String.valueOf(item.getLikeNum()));
+//        collectTextView.setText(String.valueOf(item.getCollectNum()));
+        // 获取 likeNum 和 collectNum
+        Object likeNumObj = item.getLikeNum();
+        Object collectNumObj = item.getCollectNum();
+
+// 检查并转换为整数
+        int likeNumInt;
+        int collectNumInt;
+
+        if (likeNumObj instanceof Integer) {
+            likeNumInt = (Integer) likeNumObj;
+        } else if (likeNumObj instanceof Double) {
+            likeNumInt = ((Double) likeNumObj).intValue();
+        } else {
+            // 如果不是整数或双精度数，可以设置默认值或其他处理方式
+            likeNumInt = 0; // 或者抛出异常
+        }
+
+        if (collectNumObj instanceof Integer) {
+            collectNumInt = (Integer) collectNumObj;
+        } else if (collectNumObj instanceof Double) {
+            collectNumInt = ((Double) collectNumObj).intValue();
+        } else {
+            // 如果不是整数或双精度数，可以设置默认值或其他处理方式
+            collectNumInt = 0; // 或者抛出异常
+        }
+
+        likeTextView.setText(String.valueOf(likeNumInt));
+        collectTextView.setText(String.valueOf(collectNumInt));
+        //timeTextView.setText(item.getCreateTime());
 
         // 检查 imageUrlList 是否为空
         List<String> imageUrlList = item.getImageUrlList();

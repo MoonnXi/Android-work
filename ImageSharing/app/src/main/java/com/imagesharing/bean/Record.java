@@ -110,6 +110,12 @@ public class Record {
         return 0;
     }
 
+    public int getCollectCount() {
+        if (collectNum instanceof Integer) {
+            return (Integer) collectNum;
+        }
+        return 0;
+    }
     public void incrementLikeCount() {
         likeNum = getLikeCount() + 1;
     }

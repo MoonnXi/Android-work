@@ -10,4 +10,5 @@
     <color name="light_blue">#89CFF0</color>
     <color name="listBackGround">#EDEDED</color>
     <color name="imageCardBack">#E3E3E3</color>
+    <color name="dark_gray">#808080</color>
 </resources>

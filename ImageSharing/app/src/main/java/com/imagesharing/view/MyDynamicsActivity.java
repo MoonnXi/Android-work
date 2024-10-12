@@ -33,7 +33,7 @@ public class MyDynamicsActivity extends AppCompatActivity {
 
     private TextView DynamicsNum;
     private TextView tvInfo;
-
+    private TextView userName;
     private static final String TAG = "MyDynamicsActivity";
     private Long userId;
 
