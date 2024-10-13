@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +40,9 @@ import java.util.Objects;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class SecondCommentActivity extends AppCompatActivity {
@@ -50,21 +53,21 @@ public class SecondCommentActivity extends AppCompatActivity {
     private TextView contentNum;
 
     // 一级评论id
-    private Long parentCommentId = 6653L;
+    private Long parentCommentId;
     // 一级评论的用户id
-    private Long parentCommentUserId = 1826656600132292608L;
+    private Long parentCommentUserId;
     // 被回复的评论id
-    private Long replyCommentId = 6653L;
+    private Long replyCommentId;
     // 被回复的评论的用户id
-    private Long replyCommentUserId = 1826656600132292608L;
+    private Long replyCommentUserId;
     // 图文分享的主键id
-    private Long shareId = 8009L;
+    private Long shareId;
     // 评论人userId
-    private Long userId = 1826656600132292608L;
-    // 评论人userId
-    private String userName = "heguizhang";
+    private Long userId;
+    // 评论人userName
+    private String userName;
 
-    private Long commentId = 6653L;
+    private Long commentId;
 
     private int shareListCode;
 
@@ -83,10 +86,24 @@ public class SecondCommentActivity extends AppCompatActivity {
             return insets;
         });
 
+        // 返回图标
+        ImageView ivBack = findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(v -> finish());
+
         secondCommentList = findViewById(R.id.second_comment_list);
         etContent = findViewById(R.id.et_content);
         btnComment = findViewById(R.id.btn_comment);
         contentNum = findViewById(R.id.content_num);
+
+        parentCommentId = getIntent().getLongExtra("id", 0);
+        parentCommentUserId = getIntent().getLongExtra("pUserId", 0);
+        replyCommentId = getIntent().getLongExtra("shareId", 0);
+        replyCommentUserId = getIntent().getLongExtra("pUserId", 0);
+        shareId = getIntent().getLongExtra("shareId", 0);
+        userId = getIntent().getLongExtra("userId", 0);
+        userName = getIntent().getStringExtra("userName");
+
+        commentId = getIntent().getLongExtra("id", 0);
 
         initSecondCommentList();
         btnCommentClick();
@@ -176,7 +193,8 @@ public class SecondCommentActivity extends AppCompatActivity {
 
     private void updateSecondCommentList(List<JSONObject> records) {
         runOnUiThread(() -> {
-            contentNum.setText(String.valueOf(records.size()));
+            String num = "(" + records.size() + ")";
+            contentNum.setText(num);
             SecondCommentAdapter secondCommentAdapter = new SecondCommentAdapter(records, this);
             secondCommentList.setAdapter(secondCommentAdapter);
         });
@@ -187,9 +205,16 @@ public class SecondCommentActivity extends AppCompatActivity {
      */
     private void addSecondComment() {
         new Thread(() -> {
-            String url = "http:///10.70.142.223:8080/comment/second";
+            String url = "https://api-store.openguet.cn/api/member/photo/comment/second";
 
-            RequestQueue queue = Volley.newRequestQueue(this);
+            OkHttpClient client = new OkHttpClient();
+
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Content-Type", "application/json")
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
 
             JSONObject params = new JSONObject();
             try {
@@ -206,22 +231,31 @@ public class SecondCommentActivity extends AppCompatActivity {
                 Log.d("SecondCommentActivity", e.toString());
             }
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, params,
-                    response -> {
-                        Log.d("SecondCommentActivity", response.toString());
-                        try {
-                            shareListCode = response.getInt("code");
-                            Log.d("shareListCode", "添加二级评论或回复请求 " + shareListCode);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }, error -> Log.d("SecondCommentActivity", error.toString())
-            );
+            String json = params.toString();
+            RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
 
-            queue.add(jsonObjectRequest);
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(callbackAddSecondComment);
 
         }).start();
     }
 
+    private final Callback callbackAddSecondComment = new Callback() {
+
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            Log.d("SecondCommentActivity callbackAddSecondComment", response.toString());
+        }
+
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.e("SecondCommentActivity callbackAddSecondComment", "Error response: " + e.getMessage());
+        }
+    };
 
 }
