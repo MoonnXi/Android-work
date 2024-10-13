@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,9 @@ import com.imagesharing.response.ApiResponse;
 import com.imagesharing.util.HeadersUtil;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +43,7 @@ public class CollectionActivity extends AppCompatActivity {
     private CollectItemsAdapter collectItemsAdapter;
     private static final String TAG = "CollectionActivity";
 
-    private Long userId;
+    public static Long userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +166,19 @@ public class CollectionActivity extends AppCompatActivity {
                 // 例如，使用默认图片
                 imageView.setImageResource(R.drawable.default_image2);
             }
+
+            // 添加点击事件
+            convertView.setOnClickListener(v -> {
+
+                Intent intent = new Intent(getContext(), ShareDetailActivity.class);
+                intent.putExtra("userId", userId);
+                intent.putExtra("shareId", item.getId());
+                intent.putExtra("avatar", (String) item.getAvatar());
+                intent.putExtra("username", item.getUsername());
+                intent.putExtra("userName", item.getPUserId());
+                getContext().startActivity(intent);
+
+            });
 
             return convertView;
         }

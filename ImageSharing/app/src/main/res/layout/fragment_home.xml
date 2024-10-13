@@ -10,7 +10,8 @@
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/deep_blue">
+        android:background="@color/white"
+        android:elevation="1dp">
 
         <SearchView
             android:id="@+id/search_view1"

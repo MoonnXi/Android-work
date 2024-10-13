@@ -16,19 +16,19 @@
             android:id="@+id/iv_back"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_marginStart="18dp"
             android:layout_centerVertical="true"
+            android:layout_marginStart="18dp"
             android:src="@drawable/ic_back_03" />
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="设置"
-            android:textSize="20sp"
-            android:textStyle="bold"
             android:textColor="@color/white"
-            android:layout_centerInParent="true"/>
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 

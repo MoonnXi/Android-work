@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,7 +43,7 @@ public class FocusActivity extends AppCompatActivity {
     private TextView tvInfo;
 
     private static final String TAG = "FollowedActivitiesActivity";
-    private Long userId;
+    private static Long userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,6 +184,19 @@ public class FocusActivity extends AppCompatActivity {
                 // 例如，使用默认图片
                 imageView.setImageResource(R.drawable.default_image2);
             }
+
+            // 添加点击事件
+            convertView.setOnClickListener(v -> {
+
+                Intent intent = new Intent(getContext(), ShareDetailActivity.class);
+                intent.putExtra("userId", userId);
+                intent.putExtra("shareId", item.getId());
+                intent.putExtra("avatar", (String) item.getAvatar());
+                intent.putExtra("username", item.getUsername());
+                intent.putExtra("userName", item.getPUserId());
+                getContext().startActivity(intent);
+
+            });
 
             return convertView;
         }

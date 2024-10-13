@@ -93,7 +93,7 @@ public class ShareDetailActivity extends AppCompatActivity {
         userId = getIntent().getLongExtra("userId", 0);
         shareId = getIntent().getLongExtra("shareId", 0);
         avatar = getIntent().getStringExtra("avatar");
-        username = getIntent().getStringExtra("username");
+        username = getIntent().getStringExtra("username");// 当前登录用户名
         userName = getIntent().getStringExtra("userName");
 
         Log.d("ShareDetailActivity", "userId: " + userId + ", shareId: " + shareId);

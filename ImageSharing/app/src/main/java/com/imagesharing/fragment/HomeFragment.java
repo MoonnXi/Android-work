@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment {
     public HomeFragment() {
 
     }
-
+   
     public HomeFragment(Long userId, String username) {
         this.userId = userId;
         this.username = username;
