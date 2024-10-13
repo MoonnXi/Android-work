@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Record {
     @SerializedName("id")
-    private String id;
+    private Long id;
     @SerializedName("pUserId")
     private String pUserId;
     @SerializedName("imageCode")
@@ -38,7 +38,7 @@ public class Record {
     @SerializedName("avatar")
     private Object avatar;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

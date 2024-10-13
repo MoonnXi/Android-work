@@ -31,6 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void navigateToEditProfile() {
         Intent intent = new Intent(this, UpdateActivity.class);
+        intent.putExtra("userId", userId);
         startActivity(intent);
     }
 
@@ -40,11 +41,15 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void handleLogout() {
-
-        finish();
-
+        // 显示退出登录的消息
         Toast.makeText(this, "已退出登录", Toast.LENGTH_SHORT).show();
+
+        // 清除所有活动并启动新的登录活动
         Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+
+        // 销毁当前活动
+        finish();
     }
 }
