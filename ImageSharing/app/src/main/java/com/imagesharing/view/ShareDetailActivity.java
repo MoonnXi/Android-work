@@ -63,6 +63,8 @@ public class ShareDetailActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private TextView tvFocus;
+    private ImageView ivLike;
+    private ImageView ivCollect;
 
     private Long userId;
     private Long pUserId;
@@ -72,6 +74,10 @@ public class ShareDetailActivity extends AppCompatActivity {
     private String userName;
 
     private Boolean hasFocus;
+    private Boolean hasLike;
+    private Boolean hasCollect;
+    private Long likeId;
+    private Long collectId;
 
 
     @Override
@@ -117,6 +123,8 @@ public class ShareDetailActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipe_refresh);
 
         tvFocus = findViewById(R.id.tv_focus);
+        ivLike = findViewById(R.id.iv_like);
+        ivCollect = findViewById(R.id.iv_collect);
 
         initShareDetail();
 
@@ -128,13 +136,9 @@ public class ShareDetailActivity extends AppCompatActivity {
 
         tvFocusClick();
 
-<<<<<<< Updated upstream
-=======
         ivLikeClick();
 
         ivCollectClick();
-
->>>>>>> Stashed changes
     }
 
     // 评论按钮点击事件
@@ -184,8 +188,6 @@ public class ShareDetailActivity extends AppCompatActivity {
         });
     }
 
-<<<<<<< Updated upstream
-=======
     // 点赞图标点击事件
     private void ivLikeClick() {
         ivLike.setOnClickListener(v -> {
@@ -210,7 +212,6 @@ public class ShareDetailActivity extends AppCompatActivity {
         });
     }
 
->>>>>>> Stashed changes
     // 关注请求
     private void Focus() {
         new Thread(() -> {
@@ -388,13 +389,13 @@ public class ShareDetailActivity extends AppCompatActivity {
 
                     pUserId = data.getLong("pUserId");
                     hasFocus = data.getBoolean("hasFocus");
+                    hasLike = data.getBoolean("hasLike");
+                    hasCollect = data.getBoolean("hasCollect");
 
-<<<<<<< Updated upstream
                     Log.d("initShareDetail", "pUserId: " + pUserId + " hasFocus: " + hasFocus);
-=======
+
                     Log.d("initShareDetail", "pUserId: " + pUserId + " hasFocus: " + hasFocus
                         + " hasLike: " + hasLike + " hasCollect: " + hasCollect);
->>>>>>> Stashed changes
 
                     updateShareDetail(data);
 
@@ -428,6 +429,17 @@ public class ShareDetailActivity extends AppCompatActivity {
                 } else {
                     tvFocus.setText("关注");
                 }
+
+                if (hasLike) {
+                    ivLike.setImageResource(R.drawable.ic_after_like_02);
+                } else {
+                    ivLike.setImageResource(R.drawable.ic_like_02);
+                }
+                 if (hasCollect) {
+                     ivCollect.setImageResource(R.drawable.ic_after_collect_02);
+                 } else {
+                     ivCollect.setImageResource(R.drawable.ic_collect_02);
+                 }
 
                 ivUsername.setText(username);
                 tvTitle.setText(data.getString("title"));
@@ -591,9 +603,7 @@ public class ShareDetailActivity extends AppCompatActivity {
             Log.d("ShareDetailActivity", e.toString());
         }
     };
-
-<<<<<<< Updated upstream
-=======
+    
     // 点赞请求
     private void like() {
         new Thread(() -> {
@@ -645,7 +655,7 @@ public class ShareDetailActivity extends AppCompatActivity {
                     hasLike = true;
                     getLikeId();
                     runOnUiThread(() -> {
-                        ivLike.setImageResource(R.drawable.ic_after_like);
+                        ivLike.setImageResource(R.drawable.ic_after_like_02);
                         Toast.makeText(getApplicationContext(), "点赞成功", Toast.LENGTH_SHORT).show();
                     });
                 }
@@ -712,7 +722,7 @@ public class ShareDetailActivity extends AppCompatActivity {
                 if (code == 200) {
                     hasLike = false;
                     runOnUiThread(() -> {
-                        ivLike.setImageResource(R.drawable.ic_like);
+                        ivLike.setImageResource(R.drawable.ic_like_02);
                         Toast.makeText(getApplicationContext(), "取消点赞", Toast.LENGTH_SHORT).show();
                     });
                 }
@@ -966,5 +976,5 @@ public class ShareDetailActivity extends AppCompatActivity {
         }
     };
 
->>>>>>> Stashed changes
+
 }

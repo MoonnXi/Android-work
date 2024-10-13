@@ -135,7 +135,7 @@
                             android:layout_height="25dp"
                             android:layout_marginStart="320dp"
                             android:layout_gravity="center"
-                            android:background="@drawable/ic_like" />
+                            android:background="@drawable/ic_like_02" />
 
                         <ImageView
                             android:id="@+id/iv_collect"
