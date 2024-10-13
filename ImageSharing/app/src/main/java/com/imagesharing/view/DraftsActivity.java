@@ -142,22 +142,18 @@ public class DraftsActivity extends AppCompatActivity {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_draft, parent, false);
             }
-
             Record item = items.get(position);
+
             TextView titleTextView = convertView.findViewById(R.id.titleTextView);
             TextView contentTextView = convertView.findViewById(R.id.contentTextView);
             ImageView imageView = convertView.findViewById(R.id.imageView);
             ImageButton draftButton = convertView.findViewById(R.id.draftButton);
 
-            Long id = item.getId();
-            String pUserId = item.getPUserId();
-            String imageCode = item.getImageCode();
             String title = item.getTitle();
             String content = item.getContent();
 
             titleTextView.setText(title);
             contentTextView.setText(content);
-            //Log.d(TAG, "id: " + id + ", imageCode: " + imageCode + " " + pUserId);
 
             // 检查 imageUrlList 是否为空
             List<String> imageUrlList = item.getImageUrlList();
@@ -170,8 +166,30 @@ public class DraftsActivity extends AppCompatActivity {
                 imageView.setImageResource(R.drawable.default_image2);
             }
 
+            click(draftButton, position);
+
+            return convertView;
+        }
+
+        public void setData(List<Record> newData) {
+            this.items.clear();
+            this.items.addAll(newData);
+            notifyDataSetChanged();
+        }
+
+        public void click(ImageButton draftButton, int position) {
             // 设置草稿编辑按钮的点击事件
             draftButton.setOnClickListener(v -> {
+                Record item = items.get(position);
+                Long id = item.getId();
+                String pUserId = item.getPUserId();
+                String imageCode = item.getImageCode();
+                String title = item.getTitle();
+                String content = item.getContent();
+                List<String> imageUrlList = item.getImageUrlList();
+
+                Log.d(TAG, "id: " + id + ", imageCode: " + imageCode + " " + pUserId);
+
                 //Log.d(TAG, "草稿编辑按钮被点击，id: " + id + " " + position);
                 Intent intent = new Intent(getContext(), ShareActivity.class);
                 intent.putExtra("id", id);
@@ -182,14 +200,6 @@ public class DraftsActivity extends AppCompatActivity {
                 intent.putExtra("imageUrlList", (Serializable) imageUrlList);
                 startActivity(intent);
             });
-
-            return convertView;
-        }
-
-        public void setData(List<Record> newData) {
-            this.items.clear();
-            this.items.addAll(newData);
-            notifyDataSetChanged();
         }
 
     }

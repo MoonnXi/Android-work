@@ -62,11 +62,17 @@ public class ShareDetailActivity extends AppCompatActivity {
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    private TextView tvFocus;
+
     private Long userId;
+    private Long pUserId;
     private Long shareId;
     private String avatar;
     private String username;
     private String userName;
+
+    private Boolean hasFocus;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +116,8 @@ public class ShareDetailActivity extends AppCompatActivity {
 
         swipeRefreshLayout = findViewById(R.id.swipe_refresh);
 
+        tvFocus = findViewById(R.id.tv_focus);
+
         initShareDetail();
 
         initCommentList();
@@ -117,6 +125,8 @@ public class ShareDetailActivity extends AppCompatActivity {
         btnCommentClick();
 
         reLoadShareList();
+
+        tvFocusClick();
 
     }
 
@@ -156,6 +166,154 @@ public class ShareDetailActivity extends AppCompatActivity {
         });
     }
 
+    // 关注图标点击事件
+    private void tvFocusClick() {
+        tvFocus.setOnClickListener(v -> {
+            if (hasFocus) {
+                unFocus();
+            } else {
+                Focus();
+            }
+        });
+    }
+
+    // 关注请求
+    private void Focus() {
+        new Thread(() -> {
+            String url = "https://api-store.openguet.cn/api/member/photo/focus?focusUserId=" + pUserId + "&userId=" + userId;
+
+            OkHttpClient client = new OkHttpClient();
+
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
+
+            JSONObject params = new JSONObject();
+            try {
+                params.put("focusUserId", pUserId);
+                params.put("userId", userId);
+
+            } catch (Exception e) {
+                Log.d("FirstCommentActivity", e.toString());
+            }
+
+            String json = params.toString();
+            RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(callBackFocus);
+
+        }).start();
+    }
+
+    // 关注请求回调
+    private final Callback callBackFocus = new Callback() {
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
+
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                int code = jsonResponse.getInt("code");
+
+                if (code == 200) {
+                    hasFocus = true;
+                    runOnUiThread(() -> {
+                        tvFocus.setText("已关注");
+                        Toast.makeText(getApplicationContext(), "关注成功", Toast.LENGTH_SHORT).show();
+                    });
+                }
+
+                Log.d("ShareDetailActivity", "callBackFocus: " + responseBody);
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.d("ShareDetailActivity", "callBackFocus: " + e);
+        }
+    };
+
+    // 取消关注请求
+    private void unFocus() {
+        new Thread(() -> {
+            String url = "https://api-store.openguet.cn/api/member/photo/focus/cancel?focusUserId=" + pUserId + "&userId=" + userId;
+
+            OkHttpClient client = new OkHttpClient();
+
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
+
+            JSONObject params = new JSONObject();
+            try {
+                params.put("focusUserId", pUserId);
+                params.put("userId", userId);
+
+            } catch (Exception e) {
+                Log.d("FirstCommentActivity", e.toString());
+            }
+
+            String json = params.toString();
+            RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(callBackUnFocus);
+
+        }).start();
+    }
+
+    //  取消关注回调
+    private final Callback callBackUnFocus = new Callback() {
+
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
+
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                int code = jsonResponse.getInt("code");
+
+                if (code == 200) {
+                    hasFocus = false;
+                    runOnUiThread(() -> {
+                        tvFocus.setText("关注");
+                        Toast.makeText(getApplicationContext(), "取消关注成功", Toast.LENGTH_SHORT).show();
+                    });
+                }
+
+                Log.d("ShareDetailActivity", "callBackUnFocus: " + responseBody);
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.d("ShareDetailActivity", "callBackUnFocus: " + e);
+        }
+    };
+
     // 初始化分享详情
     private void initShareDetail() {
         new Thread(() -> {
@@ -194,6 +352,11 @@ public class ShareDetailActivity extends AppCompatActivity {
                 if (jsonResponse.has("data") && !jsonResponse.isNull("data")) {
                     JSONObject data = jsonResponse.getJSONObject("data");
 
+                    pUserId = data.getLong("pUserId");
+                    hasFocus = data.getBoolean("hasFocus");
+
+                    Log.d("initShareDetail", "pUserId: " + pUserId + " hasFocus: " + hasFocus);
+
                     updateShareDetail(data);
 
                 }
@@ -220,6 +383,12 @@ public class ShareDetailActivity extends AppCompatActivity {
                         .apply(RequestOptions.circleCropTransform())
                         .placeholder(R.drawable.girlpng)
                         .into(ivAvatar);
+
+                if (hasFocus) {
+                    tvFocus.setText("已关注");
+                } else {
+                    tvFocus.setText("关注");
+                }
 
                 ivUsername.setText(username);
                 tvTitle.setText(data.getString("title"));
