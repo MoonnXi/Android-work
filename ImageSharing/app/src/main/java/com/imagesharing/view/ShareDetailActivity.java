@@ -69,27 +69,31 @@ public class ShareDetailActivity extends AppCompatActivity {
     private String userName;
 
     @Override
+    //负责创建并配置该活动
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this);  //使界面内容扩展到屏幕的边缘
 
         // 点击输入框时键盘不会遮挡输入框
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN|
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         setContentView(R.layout.activity_share_detail);
+        // 设置视图在系统栏（状态栏和导航栏）下的内边距
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        //从 Intent 中获取传递的数据
         userId = getIntent().getLongExtra("userId", 0);
         shareId = getIntent().getLongExtra("shareId", 0);
         avatar = getIntent().getStringExtra("avatar");
         username = getIntent().getStringExtra("username");
         userName = getIntent().getStringExtra("userName");
 
+        //通过 ID 绑定 UI 元素
         ivAvatar = findViewById(R.id.iv_avatar);
         ivUsername = findViewById(R.id.tv_username);
         tvTitle = findViewById(R.id.tv_title);
@@ -99,20 +103,24 @@ public class ShareDetailActivity extends AppCompatActivity {
 
         // 返回图标
         ImageView ivBack = findViewById(R.id.iv_back);
-        ivBack.setOnClickListener(v -> finish());
+        ivBack.setOnClickListener(v -> finish()); //返回按钮处理
 
         // 评论区
         commentList = findViewById(R.id.comment_list);
         etContent = findViewById(R.id.et_content);
         btnComment = findViewById(R.id.btn_comment);
 
+<<<<<<< Updated upstream
         swipeRefreshLayout = findViewById(R.id.swipe_refresh);
 
         initShareDetail();
+=======
+        initShareDetail(); //初始化分享详情
+>>>>>>> Stashed changes
 
-        initCommentList();
+        initCommentList(); //初始化评论列表
 
-        btnCommentClick();
+        btnCommentClick();  //处理评论按钮点击事件
 
         reLoadShareList();
 
@@ -131,6 +139,7 @@ public class ShareDetailActivity extends AppCompatActivity {
         });
     }
 
+<<<<<<< Updated upstream
     // 下拉刷新页面数据
     private void reLoadShareList() {
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -155,6 +164,9 @@ public class ShareDetailActivity extends AppCompatActivity {
     }
 
     // 初始化分享详情
+=======
+    //用于从服务器获取分享详情数据
+>>>>>>> Stashed changes
     private void initShareDetail() {
         new Thread(() -> {
             String url = "https://api-store.openguet.cn/api/member/photo/share/detail?shareId=" + shareId + "&userId=" + userId;
@@ -178,7 +190,7 @@ public class ShareDetailActivity extends AppCompatActivity {
         }).start();
     }
 
-    // 分享详情回调
+    // 分享详情的网络回调
     private final Callback callBackInitShareDetail = new Callback() {
         @Override
         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
@@ -208,7 +220,7 @@ public class ShareDetailActivity extends AppCompatActivity {
         }
     };
 
-    // 初始化分享详情UI界面
+    // 初始化分享详情UI界面，从服务器上提取数据
     private void updateShareDetail(JSONObject data) {
         runOnUiThread(() -> {
             try {
@@ -273,7 +285,7 @@ public class ShareDetailActivity extends AppCompatActivity {
         }).start();
     }
 
-    // 评论列表回调
+    // 评论列表回调处理逻辑
     private final Callback callBackInitCommentList = new Callback() {
 
         @Override
@@ -288,7 +300,7 @@ public class ShareDetailActivity extends AppCompatActivity {
                 if (jsonResponse.has("data") && !jsonResponse.isNull("data")) {
                     JSONObject data = jsonResponse.getJSONObject("data");
 
-                    JSONArray recordsArray = data.getJSONArray("records");
+                    JSONArray recordsArray = data.getJSONArray("records");//获取其中的 records 数组
 
                     // 遍历记录并添加到列表
                     List<JSONObject> records = new ArrayList<>();
@@ -308,7 +320,7 @@ public class ShareDetailActivity extends AppCompatActivity {
             }
         }
 
-        @Override
+        @Override //网络请求失败的时候调用
         public void onFailure(@NonNull Call call, @NonNull IOException e) {
             Log.e("initShareDetail", "callBackInitCommentList " + e.getMessage());
         }
@@ -316,6 +328,7 @@ public class ShareDetailActivity extends AppCompatActivity {
 
     // 初始化一级评论列表UI
     private void updateCommentList(List<JSONObject> records) {
+<<<<<<< Updated upstream
         runOnUiThread(() -> {
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             commentList.setLayoutManager(layoutManager);
@@ -325,6 +338,10 @@ public class ShareDetailActivity extends AppCompatActivity {
             commentList.addItemDecoration(divider);
 
             commentList.setAdapter(new CommentListAdapter(records, this));
+=======
+        runOnUiThread(() -> {//在主线程执行
+            commentList.setAdapter(new CommentListAdapter(records, this, userId, userName));
+>>>>>>> Stashed changes
         });
     }
 

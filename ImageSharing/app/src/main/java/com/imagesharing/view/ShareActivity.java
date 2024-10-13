@@ -47,20 +47,20 @@ public class ShareActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_share);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> { //为根视图适应系统窗口边距
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // 获取其他数据
+        //  Intent 中获取传递的参数
         id = getIntent().getStringExtra("id");
         pUserId = getIntent().getStringExtra("pUserId");
         imageCode = getIntent().getStringExtra("imageCode");
         title = getIntent().getStringExtra("title");
         content = getIntent().getStringExtra("content");
 
-        // 获取 imageUrlList
+        // 获取 imageUrlList获取图片 URL 列表
         @SuppressWarnings("unchecked")
         List<String> imageUrlList = (List<String>) getIntent().getSerializableExtra("imageUrlList");
 
@@ -72,7 +72,7 @@ public class ShareActivity extends AppCompatActivity {
         btnSend = findViewById(R.id.btn_send);
 
         NewImageAdapter adapter = new NewImageAdapter(this, imageUrlList);
-        gvImage.setAdapter(adapter);
+        gvImage.setAdapter(adapter); //用于显示图片列表
 
         etTitle.setText(title);
         etContent.setText(content);
@@ -81,7 +81,7 @@ public class ShareActivity extends AppCompatActivity {
 
     }
 
-    private void sendShare() {
+    private void sendShare() { //实现点击分享按钮后的操作，发送数据给服务器
         btnSend.setOnClickListener(v -> {
             String url = "https://api-store.openguet.cn/api/member/photo/share/change";
 
@@ -120,7 +120,7 @@ public class ShareActivity extends AppCompatActivity {
         });
     }
 
-    private final Callback callbackSendShare = new Callback() {
+    private final Callback callbackSendShare = new Callback() {  //处理响应回调
         @Override
         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
             Log.e("ShareActivity callbackSendShare", response.body().string());
