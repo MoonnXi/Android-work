@@ -2,6 +2,8 @@ package com.imagesharing.fragment;
 
 import static android.app.Activity.RESULT_OK;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -24,9 +27,13 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 import com.imagesharing.R;
 import com.imagesharing.adapter.ImageAdapter;
+import com.imagesharing.bean.Record;
+import com.imagesharing.response.ApiResponse;
 import com.imagesharing.util.HeadersUtil;
+import com.imagesharing.view.ShareDetailActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,7 +63,9 @@ public class ShareFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private ImageAdapter adapter;
-
+    private Long shareId;
+    private Object avatar;
+    private String username;
     private EditText etTitle;
     private EditText etContent;
 
@@ -259,7 +268,7 @@ public class ShareFragment extends Fragment {
             try { // 解析服务器返回的JSON数据
                 JSONObject jsonResponse = new JSONObject(responseBody);
 
-                String msg = jsonResponse.getString("msg");
+                //String msg = jsonResponse.getString("msg");
 
                 if (jsonResponse.has("data") && !jsonResponse.isNull("data")) {
                     JSONObject data = jsonResponse.getJSONObject("data");
@@ -271,7 +280,7 @@ public class ShareFragment extends Fragment {
                     }
                 }
 
-                Log.d("ShareFragment callbackSendImage: ", msg);
+                Log.d("ShareFragment callbackSendImage: ", responseBody);
 
             } catch (JSONException e) {
                 throw new RuntimeException(e);
@@ -483,7 +492,7 @@ public class ShareFragment extends Fragment {
                 params.put("pUserId", userId);
                 params.put("title", record.getString("title"));
 
-            } catch (Exception e) {
+            } catch (JSONException e) {
                 Log.e("sendShare", Objects.requireNonNull(e.getMessage()));
             }
 
@@ -500,13 +509,62 @@ public class ShareFragment extends Fragment {
 
         }).start();
     }
-
     // 更新分享的回调
     private final Callback callbackSendShare = new Callback() {
+
         @Override
         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-            Log.d("ShareFragment callbackSendShare", response.toString());
-        }
+
+//            if (!response.isSuccessful()) {
+//                throw new IOException("Unexpected code " + response);
+//            }
+//            String body = response.body().string();
+//            Log.d(TAG, "Response Body: " + body);
+//
+//            Gson gson = new Gson();
+//            ApiResponse apiResponse = gson.fromJson(body, ApiResponse.class);
+//
+//
+//                shareId = apiResponse.getData().getRecord().getId();
+//                avatar = apiResponse.getData().getRecord().getAvatar();
+//                username = apiResponse.getData().getRecord().getUsername();
+//
+//                getActivity().runOnUiThread(() -> {
+//
+//                    // 请求成功，提示发布成功并清空输入框内容
+//                    Toast.makeText(getContext(), "发布成功", Toast.LENGTH_SHORT).show();
+//                    etTitle.setText("");
+//                    etContent.setText("");
+//                    imageUris.clear();
+//                    imageFiles.clear();
+//                    adapter.notifyDataSetChanged();
+//
+//                    // 启动新Activity
+//                    Intent intent = new Intent(context, ShareDetailActivity.class);
+//                    intent.putExtra("userId", userId);
+//                    intent.putExtra("shareId", shareId);
+//                    intent.putExtra("avatar", (String) avatar);
+//                    intent.putExtra("username", username);
+//                    context.startActivity(intent);
+//
+//                });
+
+            if (response.isSuccessful()) {
+                getActivity().runOnUiThread(() -> {
+                    //请求成功，提示发布成功并清空输入框内容
+                    Toast.makeText(getContext(), "发布成功", Toast.LENGTH_SHORT).show();
+                    etTitle.setText("");
+                    etContent.setText("");
+                    imageUris.clear();
+                    imageFiles.clear();
+                    adapter.notifyDataSetChanged();
+                });
+            } else {
+                Log.d("ShareFragment callbackSendShare", "Request failed with code: " + response.code());
+            }
+            }
+
+
 
         @Override
         public void onFailure(@NonNull Call call, @NonNull IOException e) {
