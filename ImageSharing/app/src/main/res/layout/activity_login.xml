@@ -38,11 +38,11 @@
             android:id="@+id/et_username"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="请输入用户名"
-            android:background="@color/deep_white"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="8dp"
+            android:background="@color/deep_white"
+            android:hint="请输入用户名"
             tools:ignore="TouchTargetSizeCheck" />
 
     </com.google.android.material.textfield.TextInputLayout>

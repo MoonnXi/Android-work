@@ -1,5 +1,9 @@
 package com.imagesharing.fragment;
 
+import static android.app.Activity.RESULT_OK;
+
+import static com.imagesharing.view.MyDynamicsActivity.REQUEST_ME_FRAGMENT;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -39,6 +43,7 @@ import okhttp3.Response;
 
 public class MeFragment extends Fragment {
 
+    private static final int REQUEST_ME_FRAGMENT = 1;
     private LinearLayout releaseLayout;
     private LinearLayout aboutLayout;
     private LinearLayout downloadsLayout;
@@ -261,6 +266,16 @@ public class MeFragment extends Fragment {
             intent.putExtra("userId", userId);
             startActivity(intent);
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ME_FRAGMENT && resultCode == RESULT_OK) {
+            // MyDynamicsActivity 结束后重新请求 MeFragment 的数据
+            get();
+            fetchFollowedActivities();
+        }
     }
 
 }

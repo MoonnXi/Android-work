@@ -1,11 +1,12 @@
 package com.imagesharing.adapter;
 
+import static java.nio.file.Files.delete;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,14 +19,12 @@ import com.imagesharing.R;
 import com.imagesharing.bean.Record;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 
 public class MyDynamicsAdapter extends ArrayAdapter<Record> {
+
     private List<Record> items;
+    private OnItemClickListener onItemClickListener;
 
     public MyDynamicsAdapter(Context context, List<Record> items) {
         super(context, R.layout.item_my_dynamics, items);
@@ -44,22 +43,20 @@ public class MyDynamicsAdapter extends ArrayAdapter<Record> {
         TextView usernameTextView = convertView.findViewById(R.id.usernameTextView);
         TextView titleTextView = convertView.findViewById(R.id.titleTextView);
         TextView contentTextView = convertView.findViewById(R.id.contentTextView);
-        //TextView timeTextView = convertView.findViewById(R.id.timeTextView);
         ImageView imageView = convertView.findViewById(R.id.imageView);
         TextView likeTextView = convertView.findViewById(R.id.likeTextView);
         TextView collectTextView = convertView.findViewById(R.id.collectTextView);
+        ImageView delectImageView = convertView.findViewById(R.id.delectImageView);
 
         titleTextView.setText(item.getTitle());
         contentTextView.setText(item.getContent());
         usernameTextView.setText(item.getUsername());
         Glide.with(avatarImageView).load(item.getAvatar()).apply(RequestOptions.circleCropTransform()).into(avatarImageView);
-//        likeTextView.setText(String.valueOf(item.getLikeNum()));
-//        collectTextView.setText(String.valueOf(item.getCollectNum()));
+
         // 获取 likeNum 和 collectNum
         Object likeNumObj = item.getLikeNum();
         Object collectNumObj = item.getCollectNum();
 
-// 检查并转换为整数
         int likeNumInt;
         int collectNumInt;
 
@@ -68,7 +65,6 @@ public class MyDynamicsAdapter extends ArrayAdapter<Record> {
         } else if (likeNumObj instanceof Double) {
             likeNumInt = ((Double) likeNumObj).intValue();
         } else {
-            // 如果不是整数或双精度数，可以设置默认值或其他处理方式
             likeNumInt = 0; // 或者抛出异常
         }
 
@@ -77,13 +73,11 @@ public class MyDynamicsAdapter extends ArrayAdapter<Record> {
         } else if (collectNumObj instanceof Double) {
             collectNumInt = ((Double) collectNumObj).intValue();
         } else {
-            // 如果不是整数或双精度数，可以设置默认值或其他处理方式
             collectNumInt = 0; // 或者抛出异常
         }
 
         likeTextView.setText(String.valueOf(likeNumInt));
         collectTextView.setText(String.valueOf(collectNumInt));
-        //timeTextView.setText(item.getCreateTime());
 
         // 检查 imageUrlList 是否为空
         List<String> imageUrlList = item.getImageUrlList();
@@ -98,10 +92,16 @@ public class MyDynamicsAdapter extends ArrayAdapter<Record> {
             Picasso.get().load(imageUrlList.get(0)).into(imageView);
         } else {
             // 使用默认图片或不显示图片
-            // 例如，使用默认图片
             imageView.setImageResource(R.drawable.default_image2);
         }
 
+        // 设置点击事件
+        delectImageView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(item.getId(), position);
+                removeAtPosition(position);
+            }
+        });
 
         return convertView;
     }
@@ -110,5 +110,20 @@ public class MyDynamicsAdapter extends ArrayAdapter<Record> {
         this.items.clear();
         this.items.addAll(newData);
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public void removeAtPosition(int position) {
+        if (position >= 0 && position < getCount()) {
+            items.remove(position);
+            notifyDataSetChanged();
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Long shareId, int position);
     }
 }

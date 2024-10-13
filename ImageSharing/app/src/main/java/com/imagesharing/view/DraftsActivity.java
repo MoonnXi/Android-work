@@ -145,7 +145,7 @@ public class DraftsActivity extends AppCompatActivity {
             ImageView imageView = convertView.findViewById(R.id.imageView);
             ImageButton draftButton = convertView.findViewById(R.id.draftButton);
 
-            String id = item.getId();
+            Long id = item.getId();
             String pUserId = item.getPUserId();
             String imageCode = item.getImageCode();
             String title = item.getTitle();

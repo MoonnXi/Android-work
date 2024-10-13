@@ -1,10 +1,14 @@
 package com.imagesharing.view;
 
+import static com.imagesharing.util.HeadersUtil.APP_ID;
+import static com.imagesharing.util.HeadersUtil.APP_SECRET;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -13,6 +17,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.imagesharing.R;
 import com.imagesharing.bean.Data;
@@ -35,6 +41,7 @@ public class SearchActivity extends AppCompatActivity {
     private SearchView serchView2;
     private LinearLayout uc;
     private ImageButton followButton;
+    private ImageView avatarImageView;
     private static final String TAG = "SearchActivity";
 
     @SuppressLint("MissingInflatedId")
@@ -49,6 +56,7 @@ public class SearchActivity extends AppCompatActivity {
         uc = findViewById(R.id.user_card);
         followButton = findViewById(R.id.focusButton);
         serchView2 = findViewById(R.id.search_view2);
+        avatarImageView = findViewById(R.id.user_avatar);
 
         String query = getIntent().getStringExtra("keyword");
         if (query.isEmpty()) {
@@ -87,8 +95,8 @@ public class SearchActivity extends AppCompatActivity {
 
             // 请求头
             Headers headers = new Headers.Builder()
-                    .add("appId", "55bfc267a5a04e5baafaa64b423e551d")
-                    .add("appSecret", "923766af4a5d2542046adb0a5db6d2a9c3f0c")
+                    .add("appId", APP_ID)
+                    .add("appSecret", APP_SECRET)
                     .add("Accept", "application/json, text/plain, */*")
                     .build();
 
@@ -143,6 +151,7 @@ public class SearchActivity extends AppCompatActivity {
     private void updateUI(Data item) {
         userNameTextView.setText("用户名：" + item.getUsername());
         introductionTextView.setText("个人介绍：" + item.getIntroduce());
+        Glide.with(avatarImageView).load(item.getAvatar()).apply(RequestOptions.circleCropTransform()).into(avatarImageView);
         //关注和取消关注按钮
         followButton.setOnClickListener(v -> {
             if (item.isHasFocus()) {
