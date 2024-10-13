@@ -53,8 +53,9 @@ public class HomeFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
 
     public HomeFragment() {
-        // Required empty public constructor
+
     }
+   
     public HomeFragment(Long userId, String username) {
         this.userId = userId;
         this.username = username;

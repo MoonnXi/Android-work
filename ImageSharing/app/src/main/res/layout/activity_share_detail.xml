@@ -47,20 +47,19 @@
             android:id="@+id/iv_focus"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginEnd="60dp"
             android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
+            android:layout_marginStart="340dp"
             android:background="@drawable/pay" />
 
         <TextView
             android:id="@+id/tv_focus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="关注"
+            android:text="已关注"
             android:textColor="@color/white"
-            android:layout_marginEnd="30dp"
             android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_marginStart="2dp"
+            android:layout_toRightOf="@id/iv_focus" />
     </RelativeLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

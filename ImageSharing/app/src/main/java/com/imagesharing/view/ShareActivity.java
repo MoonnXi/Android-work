@@ -33,7 +33,7 @@ import okhttp3.Response;
 
 public class ShareActivity extends AppCompatActivity {
 
-    private String id;
+    private Long id;
     private String pUserId;
     private String imageCode;
     private String title;
@@ -54,7 +54,8 @@ public class ShareActivity extends AppCompatActivity {
         });
 
         // 获取其他数据
-        id = getIntent().getStringExtra("id");
+        id = getIntent().getLongExtra("id", 0);
+        Log.d("ShareActivity", "id: " + id);
         pUserId = getIntent().getStringExtra("pUserId");
         imageCode = getIntent().getStringExtra("imageCode");
         title = getIntent().getStringExtra("title");
