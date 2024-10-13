@@ -13,8 +13,8 @@
         <RelativeLayout
             android:id="@+id/ll_space"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/white">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/deep_blue">
 
             <TextView
                 android:id="@+id/tv_01"
@@ -23,7 +23,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:text="写分享"
-                android:textColor="@color/light_blue"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -74,9 +74,9 @@
 
                 <GridView
                     android:id="@+id/gv_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="70dp"
-                    android:numColumns="4" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:numColumns="3" />
 
             </LinearLayout>
 

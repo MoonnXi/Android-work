@@ -10,6 +10,6 @@
         android:startColor="@color/light_blue"
         android:type="linear" />
 
-    <size android:height="0.5dp" />
+    <size android:height="0.6dp" />
 
 </shape>

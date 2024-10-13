@@ -90,6 +90,8 @@ public class ShareDetailActivity extends AppCompatActivity {
         username = getIntent().getStringExtra("username");
         userName = getIntent().getStringExtra("userName");
 
+        Log.d("ShareDetailActivity", "userId: " + userId + ", shareId: " + shareId);
+
         ivAvatar = findViewById(R.id.iv_avatar);
         ivUsername = findViewById(R.id.tv_username);
         tvTitle = findViewById(R.id.tv_title);
@@ -324,7 +326,7 @@ public class ShareDetailActivity extends AppCompatActivity {
             divider.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.comment_list_divider)));
             commentList.addItemDecoration(divider);
 
-            commentList.setAdapter(new CommentListAdapter(records, this));
+            commentList.setAdapter(new CommentListAdapter(records, this, userId, userName));
         });
     }
 

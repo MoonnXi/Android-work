@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -56,8 +57,11 @@ public class UpdateActivity extends AppCompatActivity {
         etSex = findViewById(R.id.et_sex);
         Button btnSave = findViewById(R.id.btn_save);
 
+        // 返回图标
+        ImageView ivBack = findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(v -> finish());
+
         userId = getIntent().getLongExtra("userId", -1);
-        System.out.println("userId99999: " + userId);
 
         // 设置点击监听器
         btnSave.setOnClickListener(new View.OnClickListener() {

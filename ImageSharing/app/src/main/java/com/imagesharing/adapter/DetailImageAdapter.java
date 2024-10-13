@@ -59,7 +59,6 @@ public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.
             super(itemView);
             imageView = itemView.findViewById(R.id.iv_image);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            //imageView.setLayoutParams(new GridView.LayoutParams(50, 50));
         }
     }
 }

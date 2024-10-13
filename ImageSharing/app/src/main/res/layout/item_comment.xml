@@ -29,13 +29,6 @@
             android:layout_marginTop="2dp"
             android:text="我爱学安卓"
             android:textSize="15sp" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="220dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/zan" />
         
     </LinearLayout>
 
@@ -63,14 +56,14 @@
             android:textColor="#9B9D9E"
             android:textSize="14sp"
             android:layout_centerVertical="true"/>
-        
+
         <ImageView
             android:id="@+id/tv_reply"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="10dp"
             android:src="@drawable/ic_reply"
-            android:layout_toRightOf="@id/tv_time"/>
+            android:layout_toRightOf="@id/tv_time" />
         
     </RelativeLayout>
 

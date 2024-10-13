@@ -57,6 +57,9 @@ public class CollectionActivity extends AppCompatActivity {
         listView.setDivider(getResources().getDrawable(R.drawable.divider));
         listView.setDividerHeight(16); // 设置间距高度
 
+        // 返回图标
+        ImageView ivBack = findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(v -> finish());
 
         get();
     }
