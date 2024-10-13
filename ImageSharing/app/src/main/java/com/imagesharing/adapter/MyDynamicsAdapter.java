@@ -1,8 +1,10 @@
 package com.imagesharing.adapter;
 
+import static com.imagesharing.view.CollectionActivity.userId;
 import static java.nio.file.Files.delete;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.imagesharing.R;
 import com.imagesharing.bean.Record;
+import com.imagesharing.view.ShareDetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -101,6 +104,19 @@ public class MyDynamicsAdapter extends ArrayAdapter<Record> {
                 onItemClickListener.onItemClick(item.getId(), position);
                 removeAtPosition(position);
             }
+        });
+
+        // 添加点击事件
+        convertView.setOnClickListener(v -> {
+
+            Intent intent = new Intent(getContext(), ShareDetailActivity.class);
+            intent.putExtra("userId",userId);
+            intent.putExtra("shareId", item.getId());
+            intent.putExtra("avatar", (String) item.getAvatar());
+            intent.putExtra("username", item.getUsername());
+            intent.putExtra("userName", item.getPUserId());
+            getContext().startActivity(intent);
+
         });
 
         return convertView;

@@ -195,7 +195,6 @@ public class MyDynamicsActivity extends AppCompatActivity {
             if (apiResponse != null && apiResponse.getCode() == 200) {
 
                 runOnUiThread(() -> {
-                    //apiResponse.getData().getId().toString().hashCode();
                     myDynamicsAdapter.notifyDataSetChanged();
                     Toast.makeText(MyDynamicsActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
 

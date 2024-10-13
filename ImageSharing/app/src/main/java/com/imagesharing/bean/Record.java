@@ -131,4 +131,8 @@ public class Record {
     public void toggleLike() {
         hasLike = !hasLike;
     }
+
+    public boolean getUserName() {
+        return false;
+    }
 }

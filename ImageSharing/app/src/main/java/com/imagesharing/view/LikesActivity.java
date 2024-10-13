@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,7 +40,7 @@ public class LikesActivity extends AppCompatActivity {
     private LikesAdapter likesAdapter;
     private static final String TAG = "LikesActivity";
 
-    private Long userId;
+    private static Long userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,22 +164,18 @@ public class LikesActivity extends AppCompatActivity {
                 imageView.setImageResource(R.drawable.default_image2);
             }
 
-//            // 设置点赞按钮的点击事件
-//            likeButton.setOnClickListener(v -> {
-//                item.toggleLike();
-//                if (item.isLiked()) {
-//                    likeButton.setImageResource(R.drawable.ic_like_selected2);
-//                } else {
-//                    likeButton.setImageResource(R.drawable.ic_like_unselected3);
-//                }
-//            });
+            // 添加点击事件
+            convertView.setOnClickListener(v -> {
 
-//            // 设置点赞按钮的状态
-//            if (item.isLiked()) {
-//                likeButton.setImageResource(R.drawable.ic_like_selected2);
-//            } else {
-//                likeButton.setImageResource(R.drawable.ic_like_selected2);
-//            }
+                Intent intent = new Intent(getContext(), ShareDetailActivity.class);
+                intent.putExtra("userId", userId);
+                intent.putExtra("shareId", item.getId());
+                intent.putExtra("avatar", (String) item.getAvatar());
+                intent.putExtra("username", item.getUsername());
+                intent.putExtra("userName", item.getPUserId());
+                getContext().startActivity(intent);
+
+            });
 
             return convertView;
         }

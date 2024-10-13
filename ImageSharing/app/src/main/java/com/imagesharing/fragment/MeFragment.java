@@ -53,15 +53,20 @@ public class MeFragment extends Fragment {
 
     private ImageView profileImage;
 
-    private final Long userId;
-    private final String username;
-    private final String avatar;
+    private  Long userId;
+    private  String username;
+    private  String avatar;
+
+    // 添加无参构造函数
+    public MeFragment() {}
 
     public MeFragment(Long userId, String username, String avatar) {
         this.userId = userId;
         this.username = username;
         this.avatar = avatar;
     }
+
+
 
     @Nullable
     @Override

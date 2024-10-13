@@ -106,7 +106,7 @@
 
                     <RelativeLayout
                         android:id="@+id/rl_image"
-                        android:layout_width="350dp"
+                        android:layout_width="360dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:layout_gravity="center_horizontal">
