@@ -9,8 +9,8 @@
     <RelativeLayout
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:background="@color/white">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/deep_blue">
 
         <SearchView
             android:id="@+id/search_view1"

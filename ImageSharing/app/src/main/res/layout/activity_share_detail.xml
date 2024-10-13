@@ -11,7 +11,7 @@
     <RelativeLayout
         android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/deep_blue"
         android:layout_alignParentTop="true">
 
@@ -21,7 +21,7 @@
             android:layout_height="25dp"
             android:layout_marginStart="18dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_back_02" />
+            android:src="@drawable/ic_back_03" />
 
         <ImageView
             android:id="@+id/iv_avatar"

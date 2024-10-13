@@ -63,6 +63,10 @@ public class FocusActivity extends AppCompatActivity {
         followedActivitiesListView.setDivider(getResources().getDrawable(R.drawable.divider));
         followedActivitiesListView.setDividerHeight(25); // 设置间距高度
 
+        // 返回图标
+        ImageView ivBack = findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(v -> finish());
+
         fetchFollowedActivities();
     }
 

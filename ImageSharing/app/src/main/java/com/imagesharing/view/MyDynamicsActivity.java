@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -56,6 +57,10 @@ public class MyDynamicsActivity extends AppCompatActivity {
         // 设置 item 之间的间距
         myDynamicsListView.setDivider(getResources().getDrawable(R.drawable.divider));
         myDynamicsListView.setDividerHeight(25); // 设置间距高度
+
+        // 返回图标
+        ImageView ivBack = findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(v -> finish());
 
         get();
     }

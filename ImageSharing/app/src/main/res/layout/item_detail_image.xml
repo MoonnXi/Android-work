@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/iv_image"
-        android:layout_width="145dp"
+        android:layout_width="140dp"
         android:layout_height="140dp"
         tools:ignore="MissingConstraints" />
 

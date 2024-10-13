@@ -2,6 +2,7 @@ package com.imagesharing.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,10 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         userId = getIntent().getLongExtra("userId", -1);
+
+        // 返回图标
+        ImageView ivBack = findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(v -> finish());
 
         // 设置点击事件
         setupClickListeners();
