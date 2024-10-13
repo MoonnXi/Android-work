@@ -159,7 +159,18 @@ public class FocusActivity extends AppCompatActivity {
             //ImageButton likeButton = convertView.findViewById(R.id.likeButton);
 
             titleTextView.setText(item.getTitle());
-            contentTextView.setText(item.getContent());
+//            contentTextView.setText(item.getContent());
+            String content = item.getContent(); // 获取内容字符串
+
+            // 判断内容长度是否超过65个字符
+            if (content.length() > 65) {
+                // 截取前65个字符并在末尾添加 "..."
+                String truncatedContent = content.substring(0, 65) + "...";
+                contentTextView.setText(truncatedContent);
+            } else {
+                contentTextView.setText(content);
+            }
+
             authorTextView.setText(item.getUsername());
 
             // 检查 imageUrlList 是否为空

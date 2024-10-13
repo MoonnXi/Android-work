@@ -61,6 +61,8 @@ public class UpdateActivity extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.iv_back);
         ivBack.setOnClickListener(v -> finish());
 
+        userId = getIntent().getLongExtra("userId", -1);
+
         // 设置点击监听器
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,9 +98,7 @@ public class UpdateActivity extends AppCompatActivity {
                     .add("Accept", "application/json, text/plain, */*")
                     .build();
 
-//            userId = getIntent().getLongExtra("userId", -1);
-
-            userId = getIntent().getLongExtra("userId", -1);
+            System.out.println("userId99999: " + userId);
             // 请求体
             Map<String, Object> bodyMap = new HashMap<>();
             bodyMap.put("avatar", avatar);
@@ -146,6 +146,7 @@ public class UpdateActivity extends AppCompatActivity {
             Log.d("info", dataResponseBody.toString());
 
             runOnUiThread(() -> Toast.makeText(UpdateActivity.this, "修改成功", Toast.LENGTH_SHORT).show());
+            finish();
         }
     };
 

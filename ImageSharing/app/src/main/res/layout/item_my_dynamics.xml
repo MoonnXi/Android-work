@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -29,6 +30,14 @@
             android:text="用户名"
             android:textColor="@color/black"
             android:textSize="16sp" />
+        <ImageView
+            android:id="@+id/delectImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_dl5"
+            android:layout_marginStart="240dp"
+            android:layout_gravity="end"/>
+
 
     </LinearLayout>
 
@@ -62,8 +71,6 @@
 
     </LinearLayout>
 
-
-
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,9 +89,7 @@
                 android:scaleType="centerCrop"
                 android:layout_marginRight="8dp" />
 
-
         </LinearLayout>
-
 
     </HorizontalScrollView>
 
@@ -93,14 +98,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp">
 
         <!-- 点赞数图标 -->
         <ImageView
             android:id="@+id/likeImageView"
             android:layout_width="20dp"
             android:layout_height="20dp"
-
             android:src="@drawable/ic_after_like" />
         <TextView
             android:id="@+id/likeTextView"
@@ -108,7 +114,8 @@
             android:layout_height="wrap_content"
             android:text="0"
             android:textSize="14sp"
-            android:textColor="@color/dark_gray" />
+            android:textColor="@color/dark_gray"
+            android:layout_marginStart="4dp" />
 
         <!-- 收藏数图标 -->
         <ImageView
@@ -122,7 +129,8 @@
             android:layout_height="wrap_content"
             android:text="0"
             android:textSize="14sp"
-            android:textColor="@color/dark_gray" />
+            android:textColor="@color/dark_gray"
+            android:layout_marginStart="4dp" />
 
     </LinearLayout>
 </LinearLayout>

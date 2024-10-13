@@ -76,4 +76,12 @@ public class Data {
         isFocus = b;
         return ;
     }
+
+    public Object getAvatar() {
+        return avatar;
+    }
+
+    public Object getId() {
+        return id;
+    }
 }
