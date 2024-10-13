@@ -63,6 +63,8 @@ public class ShareDetailActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private TextView tvFocus;
+    private ImageView ivLike;
+    private ImageView ivCollect;
 
     private Long userId;
     private Long pUserId;
@@ -72,6 +74,10 @@ public class ShareDetailActivity extends AppCompatActivity {
     private String userName;
 
     private Boolean hasFocus;
+    private Boolean hasLike;
+    private Boolean hasCollect;
+    private Long likeId;
+    private Long collectId;
 
 
     @Override
@@ -117,6 +123,8 @@ public class ShareDetailActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipe_refresh);
 
         tvFocus = findViewById(R.id.tv_focus);
+        ivLike = findViewById(R.id.iv_like);
+        ivCollect = findViewById(R.id.iv_collect);
 
         initShareDetail();
 
@@ -128,6 +136,9 @@ public class ShareDetailActivity extends AppCompatActivity {
 
         tvFocusClick();
 
+        ivLikeClick();
+
+        ivCollectClick();
     }
 
     // 评论按钮点击事件
@@ -173,6 +184,30 @@ public class ShareDetailActivity extends AppCompatActivity {
                 unFocus();
             } else {
                 Focus();
+            }
+        });
+    }
+
+    // 点赞图标点击事件
+    private void ivLikeClick() {
+        ivLike.setOnClickListener(v -> {
+            if (hasLike) {
+                unLike();
+            } else {
+                like();
+            }
+        });
+    }
+
+    private void ivCollectClick() {
+        ivCollect.setOnClickListener(v -> {
+            if (hasCollect) {
+                Log.d("ShareDetailActivity", "取消收藏");
+                unCollect();
+            } else {
+                Log.d("ShareDetailActivity", "收藏");
+                collect();
+
             }
         });
     }
@@ -354,8 +389,13 @@ public class ShareDetailActivity extends AppCompatActivity {
 
                     pUserId = data.getLong("pUserId");
                     hasFocus = data.getBoolean("hasFocus");
+                    hasLike = data.getBoolean("hasLike");
+                    hasCollect = data.getBoolean("hasCollect");
 
                     Log.d("initShareDetail", "pUserId: " + pUserId + " hasFocus: " + hasFocus);
+
+                    Log.d("initShareDetail", "pUserId: " + pUserId + " hasFocus: " + hasFocus
+                        + " hasLike: " + hasLike + " hasCollect: " + hasCollect);
 
                     updateShareDetail(data);
 
@@ -389,6 +429,17 @@ public class ShareDetailActivity extends AppCompatActivity {
                 } else {
                     tvFocus.setText("关注");
                 }
+
+                if (hasLike) {
+                    ivLike.setImageResource(R.drawable.ic_after_like_02);
+                } else {
+                    ivLike.setImageResource(R.drawable.ic_like_02);
+                }
+                 if (hasCollect) {
+                     ivCollect.setImageResource(R.drawable.ic_after_collect_02);
+                 } else {
+                     ivCollect.setImageResource(R.drawable.ic_collect_02);
+                 }
 
                 ivUsername.setText(username);
                 tvTitle.setText(data.getString("title"));
@@ -552,5 +603,378 @@ public class ShareDetailActivity extends AppCompatActivity {
             Log.d("ShareDetailActivity", e.toString());
         }
     };
+    
+    // 点赞请求
+    private void like() {
+        new Thread(() -> {
+            String url = "https://api-store.openguet.cn/api/member/photo/like?shareId=" + shareId + "&userId=" + userId;
+
+            OkHttpClient client = new OkHttpClient();
+
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
+
+            JSONObject params = new JSONObject();
+            try {
+                params.put("shareId", shareId);
+                params.put("userId", userId);
+
+            } catch (Exception e) {
+                Log.d("ShareDetailActivity", e.toString());
+            }
+
+            String json = params.toString();
+            RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(callBackLike);
+
+        }).start();
+    }
+
+    // 点赞请求回调
+    private final Callback callBackLike = new Callback() {
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
+
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                int code = jsonResponse.getInt("code");
+
+                if (code == 200) {
+                    hasLike = true;
+                    getLikeId();
+                    runOnUiThread(() -> {
+                        ivLike.setImageResource(R.drawable.ic_after_like_02);
+                        Toast.makeText(getApplicationContext(), "点赞成功", Toast.LENGTH_SHORT).show();
+                    });
+                }
+
+                Log.d("ShareDetailActivity", "callBackLike: " + responseBody);
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.e("ShareDetailActivity", "callBackLike " + e.getMessage());
+        }
+    };
+
+    // 取消点赞
+    private void unLike() {
+        new Thread(() -> {
+            String url = "https://api-store.openguet.cn/api/member/photo/like/cancel?likeId=" + likeId;
+
+            OkHttpClient client = new OkHttpClient();
+
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
+
+            JSONObject params = new JSONObject();
+            try {
+                params.put("likeId", likeId);
+
+            } catch (Exception e) {
+                Log.d("ShareDetailActivity", e.toString());
+            }
+
+            String json = params.toString();
+            RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(callBackUnLike);
+
+        }).start();
+    }
+
+    // 取消点赞回调
+    private final Callback callBackUnLike = new Callback() {
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
+
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                int code = jsonResponse.getInt("code");
+
+                if (code == 200) {
+                    hasLike = false;
+                    runOnUiThread(() -> {
+                        ivLike.setImageResource(R.drawable.ic_like_02);
+                        Toast.makeText(getApplicationContext(), "取消点赞", Toast.LENGTH_SHORT).show();
+                    });
+                }
+
+                Log.d("ShareDetailActivity", "callBackLike: " + responseBody);
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.e("ShareDetailActivity", "callBackUnLike " + e.getMessage());
+        }
+    };
+
+    // 收藏请求
+    private void collect() {
+        String url = "https://api-store.openguet.cn/api/member/photo/collect?shareId=" + shareId + "&userId=" + userId;
+
+        OkHttpClient client = new OkHttpClient();
+
+        Headers headers = new Headers.Builder()
+                .add("appId", HeadersUtil.APP_ID)
+                .add("appSecret", HeadersUtil.APP_SECRET)
+                .add("Accept", "application/json, text/plain, */*")
+                .build();
+
+        JSONObject params = new JSONObject();
+        try {
+            params.put("shareId", shareId);
+            params.put("userId", userId);
+
+        } catch (Exception e) {
+            Log.d("ShareDetailActivity", e.toString());
+        }
+
+        String json = params.toString();
+        RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .headers(headers)
+                .post(requestBody)
+                .build();
+
+        Log.d("ShareDetailActivity", "collect: " + json);
+
+        client.newCall(request).enqueue(callBackCollect);
+    }
+
+    private final Callback callBackCollect = new Callback() {
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
+
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                int code = jsonResponse.getInt("code");
+
+                if (code == 200) {
+                    hasCollect = true;
+                    getCollectId();
+                    runOnUiThread(() -> {
+                        ivCollect.setImageResource(R.drawable.ic_after_collect_02);
+                        Toast.makeText(getApplicationContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+                    });
+                }
+
+                Log.d("ShareDetailActivity", "callBackCollect: " + responseBody);
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.e("ShareDetailActivity", "callBackCollect " + e.getMessage());
+        }
+    };
+
+    private void unCollect() {
+        String url = "https://api-store.openguet.cn/api/member/photo/collect/cancel?collectId=" + collectId;
+
+        OkHttpClient client = new OkHttpClient();
+
+        Headers headers = new Headers.Builder()
+                .add("appId", HeadersUtil.APP_ID)
+                .add("appSecret", HeadersUtil.APP_SECRET)
+                .add("Accept", "application/json, text/plain, */*")
+                .build();
+
+        JSONObject params = new JSONObject();
+        try {
+            params.put("collectId", collectId);
+
+        } catch (Exception e) {
+            Log.d("ShareDetailActivity", e.toString());
+        }
+
+        String json = params.toString();
+        RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json; charset=utf-8"));
+
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .headers(headers)
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(callBackUnCollect);
+    }
+
+    private final Callback callBackUnCollect = new Callback() {
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
+
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                int code = jsonResponse.getInt("code");
+
+                if (code == 200) {
+                    hasCollect = false;
+                    runOnUiThread(() -> {
+                        ivCollect.setImageResource(R.drawable.ic_collect_02);
+                        Toast.makeText(getApplicationContext(), "取消收藏", Toast.LENGTH_SHORT).show();
+                    });
+                }
+
+                Log.d("ShareDetailActivity", "callBackUnCollect: " + responseBody);
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.e("ShareDetailActivity", "callBackUnCollect " + e.getMessage());
+        }
+    };
+
+    // 获取点赞id
+    private void getLikeId() {
+        new Thread(() -> {
+            String url = "https://api-store.openguet.cn/api/member/photo/share/detail?shareId=" + shareId + "&userId=" + userId;
+
+            OkHttpClient client = new OkHttpClient();
+
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
+
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .get()
+                    .build();
+
+            client.newCall(request).enqueue(callBackLikeId);
+
+        }).start();
+    }
+
+    // 获取点赞id回调
+    private final Callback callBackLikeId = new Callback() {
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
+
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                if (jsonResponse.has("data") && !jsonResponse.isNull("data")) {
+                    JSONObject data = jsonResponse.getJSONObject("data");
+
+                    likeId = data.getLong("likeId");
+
+                    Log.d("getLikeId", "likeId: " + likeId);
+
+                    updateShareDetail(data);
+
+                }
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.e("ShareDetailActivity", "callBackLikeId " + e.getMessage());
+        }
+    };
+
+    // 获取收藏id
+    private void getCollectId() {
+        new Thread(() -> {
+            String url = "https://api-store.openguet.cn/api/member/photo/share/detail?shareId=" + shareId + "&userId=" + userId;
+
+            OkHttpClient client = new OkHttpClient();
+
+            Headers headers = new Headers.Builder()
+                    .add("appId", HeadersUtil.APP_ID)
+                    .add("appSecret", HeadersUtil.APP_SECRET)
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
+
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(headers)
+                    .get()
+                    .build();
+
+            client.newCall(request).enqueue(callBackCollectId);
+        }).start();
+    }
+
+    // 获取收藏id回调
+    private final Callback callBackCollectId = new Callback() {
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            String responseBody = Objects.requireNonNull(response.body()).string();
+
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                if (jsonResponse.has("data") && !jsonResponse.isNull("data")) {
+                    JSONObject data = jsonResponse.getJSONObject("data");
+
+                    collectId = data.getLong("collectId");
+
+                    Log.d("getCollectId", "collectId: " + collectId);
+
+                }
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Log.e("ShareDetailActivity", "callBackCollectId " + e.getMessage());
+        }
+    };
+
 
 }
