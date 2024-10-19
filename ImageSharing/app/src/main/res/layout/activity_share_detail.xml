@@ -129,18 +129,28 @@
                         android:layout_marginTop="30dp"
                         android:layout_marginBottom="20dp">
 
+                        <TextView
+                            android:id="@+id/tv_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="发布于：2024-9-15 30:29:10"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="5dp"/>
+
                         <ImageView
                             android:id="@+id/iv_like"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:layout_marginStart="320dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="105dp"
                             android:layout_gravity="center"
                             android:background="@drawable/ic_like_02" />
 
                         <ImageView
                             android:id="@+id/iv_collect"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:layout_marginStart="20dp"
                             android:layout_gravity="center"
                             android:background="@drawable/ic_collect_02" />

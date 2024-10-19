@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -65,10 +66,12 @@ public class ShareDetailActivity extends AppCompatActivity {
     private TextView tvFocus;
     private ImageView ivLike;
     private ImageView ivCollect;
+    private TextView tvTime;
 
     private Long userId;
     private Long pUserId;
     private Long shareId;
+    private Long createTime;
     private String avatar;
     private String username;
     private String userName;
@@ -98,9 +101,11 @@ public class ShareDetailActivity extends AppCompatActivity {
 
         userId = getIntent().getLongExtra("userId", 0);
         shareId = getIntent().getLongExtra("shareId", 0);
+
         avatar = getIntent().getStringExtra("avatar");
-        username = getIntent().getStringExtra("username");// 当前登录用户名
-        userName = getIntent().getStringExtra("userName");
+        username = getIntent().getStringExtra("username");// 发布当前图文详情的用户的名字
+
+        userName = getIntent().getStringExtra("userName");// 当前登录用户名
 
         Log.d("ShareDetailActivity", "userId: " + userId + ", shareId: " + shareId);
 
@@ -110,6 +115,7 @@ public class ShareDetailActivity extends AppCompatActivity {
         tvContent = findViewById(R.id.tv_content);
         gvImage = findViewById(R.id.gv_image);
         ivImage = findViewById(R.id.iv_image);
+        tvTime = findViewById(R.id.tv_time);
 
         // 返回图标
         ImageView ivBack = findViewById(R.id.iv_back);
@@ -388,6 +394,7 @@ public class ShareDetailActivity extends AppCompatActivity {
                     JSONObject data = jsonResponse.getJSONObject("data");
 
                     pUserId = data.getLong("pUserId");
+                    createTime = data.getLong("createTime");
                     hasFocus = data.getBoolean("hasFocus");
                     hasLike = data.getBoolean("hasLike");
                     hasCollect = data.getBoolean("hasCollect");
@@ -444,6 +451,13 @@ public class ShareDetailActivity extends AppCompatActivity {
                 ivUsername.setText(username);
                 tvTitle.setText(data.getString("title"));
                 tvContent.setText(data.getString("content"));
+
+                //构造方法设置年月日时分秒格式
+                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String time = sdf.format(createTime);
+                String timeText = "发布于：" + time;
+                tvTime.setText(timeText);
+
 
                 // 加载图片内容
                 JSONArray imageUrlList = data.getJSONArray("imageUrlList");
