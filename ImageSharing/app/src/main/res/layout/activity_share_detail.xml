@@ -141,6 +141,11 @@
 
                         <ImageView
                             android:id="@+id/iv_like"
+                            android:layout_width="25dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="320dp"
+                            android:background="@drawable/ic_like" />
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginStart="105dp"
