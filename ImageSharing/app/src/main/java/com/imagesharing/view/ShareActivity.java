@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -118,6 +119,8 @@ public class ShareActivity extends AppCompatActivity {
                     .build();
 
             client.newCall(request).enqueue(callbackSendShare);
+
+            Toast.makeText(ShareActivity.this, "发布成功", Toast.LENGTH_SHORT).show();
         });
     }
 

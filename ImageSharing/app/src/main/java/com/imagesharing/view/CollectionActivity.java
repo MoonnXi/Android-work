@@ -115,6 +115,7 @@ public class CollectionActivity extends AppCompatActivity {
             // 确保code为200且有数据
             if (apiResponse != null && apiResponse.getCode() == 200 && apiResponse.getData() != null) {
                 List<Record> records = apiResponse.getData().getRecords();
+                Log.d(TAG, "00000000000000000000000Records: " + apiResponse.getData());
                 runOnUiThread(() -> {
                     // 更新UI
                     updateUI(records);

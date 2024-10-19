@@ -54,7 +54,11 @@ public class MyDynamicsAdapter extends ArrayAdapter<Record> {
         titleTextView.setText(item.getTitle());
         contentTextView.setText(item.getContent());
         usernameTextView.setText(item.getUsername());
-        Glide.with(avatarImageView).load(item.getAvatar()).apply(RequestOptions.circleCropTransform()).into(avatarImageView);
+        Glide.with(avatarImageView)
+                .load(item.getAvatar())
+                .apply(RequestOptions.circleCropTransform())
+                .placeholder(R.drawable.girlpng)
+                .into(avatarImageView);
 
         // 获取 likeNum 和 collectNum
         Object likeNumObj = item.getLikeNum();

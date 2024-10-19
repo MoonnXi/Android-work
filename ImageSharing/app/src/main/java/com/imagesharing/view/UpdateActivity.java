@@ -81,11 +81,11 @@ public class UpdateActivity extends AppCompatActivity {
             String sex = etSex.getText().toString().trim();
 
             // 检查是否有必填字段为空
-            if (username.isEmpty() || avatar.isEmpty() || introduce.isEmpty() || sex.isEmpty()) {
-                // 如果有为空的字段，显示提示信息
-                runOnUiThread(() -> Toast.makeText(UpdateActivity.this, "参数不能为空", Toast.LENGTH_SHORT).show());
-                return;
-            }
+//            if (username.isEmpty() || avatar.isEmpty() || introduce.isEmpty() || sex.isEmpty()) {
+//                // 如果有为空的字段，显示提示信息
+//                runOnUiThread(() -> Toast.makeText(UpdateActivity.this, "参数不能为空", Toast.LENGTH_SHORT).show());
+//                return;
+//            }
 
             // url路径
             String url = "https://api-store.openguet.cn/api/member/photo/user/update";
