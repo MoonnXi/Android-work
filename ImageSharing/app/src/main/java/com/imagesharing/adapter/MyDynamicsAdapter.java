@@ -22,11 +22,13 @@ import com.imagesharing.bean.Record;
 import com.imagesharing.view.ShareDetailActivity;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MyDynamicsAdapter extends ArrayAdapter<Record> {
 
     private List<Record> items;
+    private Long createTime;
     private OnItemClickListener onItemClickListener;
 
     public MyDynamicsAdapter(Context context, List<Record> items) {
@@ -50,7 +52,8 @@ public class MyDynamicsAdapter extends ArrayAdapter<Record> {
         TextView likeTextView = convertView.findViewById(R.id.likeTextView);
         TextView collectTextView = convertView.findViewById(R.id.collectTextView);
         ImageView delectImageView = convertView.findViewById(R.id.delectImageView);
-
+        TextView timeTextView = convertView.findViewById(R.id.tv_time);
+        createTime = Long.valueOf(item.getCreateTime());
         titleTextView.setText(item.getTitle());
         contentTextView.setText(item.getContent());
         usernameTextView.setText(item.getUsername());
@@ -59,6 +62,12 @@ public class MyDynamicsAdapter extends ArrayAdapter<Record> {
                 .apply(RequestOptions.circleCropTransform())
                 .placeholder(R.drawable.girlpng)
                 .into(avatarImageView);
+
+        //构造方法设置年月日时分秒格式
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = sdf.format(createTime);
+        String timeText = "发布于：" + time;
+        timeTextView.setText(timeText);
 
         // 获取 likeNum 和 collectNum
         Object likeNumObj = item.getLikeNum();

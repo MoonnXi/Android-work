@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
 android {
     namespace 'com.imagesharing'
     compileSdk 34
